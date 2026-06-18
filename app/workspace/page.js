@@ -5,6 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { useRouter } from 'next/navigation';
 import Sidebar from '@/components/workspace/Sidebar';
+import ProjectSwitcherSidebar from '@/components/workspace/ProjectSwitcherSidebar';
 import ChatWindow from '@/components/chat/ChatWindow';
 import TaskBoard from '@/components/tasks/TaskBoard';
 import LeaveManager from '@/components/leaves/LeaveManager';
@@ -34,7 +35,7 @@ export default function WorkspacePage() {
         .update({ read: true })
         .eq('workspace_id', activeWorkspace.id)
         .eq('user_id', user.id);
-      
+
       setNotifications(prev => prev.map(n => ({ ...n, read: true })));
     } catch (err) {
       console.error(err);
@@ -59,6 +60,9 @@ export default function WorkspacePage() {
 
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-slate-50">
+      {/* Project Switcher Sidebar (Slack workspaces style) */}
+      <ProjectSwitcherSidebar />
+
       {/* Sidebar Navigation */}
       <Sidebar currentView={currentView} onSelectView={setCurrentView} />
 
@@ -105,9 +109,8 @@ export default function WorkspacePage() {
                   {notifications.map((notif) => (
                     <div
                       key={notif.id}
-                      className={`p-3 border-b border-slate-50 text-xs flex items-start gap-2.5 hover:bg-slate-50/50 smooth-transition ${
-                        !notif.read ? 'bg-indigo-50/10 font-semibold' : ''
-                      }`}
+                      className={`p-3 border-b border-slate-50 text-xs flex items-start gap-2.5 hover:bg-slate-50/50 smooth-transition ${!notif.read ? 'bg-indigo-50/10 font-semibold' : ''
+                        }`}
                     >
                       <div className="mt-0.5 text-indigo-600">
                         {notif.type === 'task' ? <CheckCircle size={14} /> : <FileText size={14} />}

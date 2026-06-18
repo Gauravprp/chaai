@@ -37,9 +37,12 @@ export default function ChatWindow() {
   const [showSearch, setShowSearch] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [showMediaTab, setShowMediaTab] = useState(false);
+  const [mediaTabType, setMediaTabType] = useState('media'); // 'media' | 'docs'
   const [pinnedMessage, setPinnedMessage] = useState(null);
   const [showScheduleModal, setShowScheduleModal] = useState(false);
   const [scheduleTime, setScheduleTime] = useState('');
+  const [showScrollBottom, setShowScrollBottom] = useState(false);
+  const [openMenuId, setOpenMenuId] = useState(null);
 
   // Audio Recording Mock
   const [isRecording, setIsRecording] = useState(false);
@@ -64,11 +67,25 @@ export default function ChatWindow() {
         newMsg.sender_id?.toLowerCase() === profile?.id?.toLowerCase() ||
         newMsg.user_id?.toLowerCase() === profile?.id?.toLowerCase();
       if (isSelfMsg) {
-        chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+        scrollToBottom();
       }
     }
     prevMessagesRef.current = messages;
   }, [messages, profile]);
+
+  const scrollToBottom = () => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleScroll = (e) => {
+    const { scrollTop, scrollHeight, clientHeight } = e.target;
+    // Show scroll button if we scrolled up significantly
+    if (scrollHeight - scrollTop - clientHeight > 100) {
+      setShowScrollBottom(true);
+    } else {
+      setShowScrollBottom(false);
+    }
+  };
 
   // Load Pinned Message
   useEffect(() => {
@@ -348,6 +365,13 @@ export default function ChatWindow() {
     ? messages.filter(m => m.content?.toLowerCase().includes(searchQuery.toLowerCase()))
     : messages;
 
+  // Get Shared Media
+  const sharedMedia = messages.filter(msg => msg.media_url);
+  const filteredSharedMedia = sharedMedia.filter(msg => {
+    if (mediaTabType === 'media') return msg.message_type === 'image' || msg.message_type === 'video';
+    return msg.message_type === 'document' || msg.message_type === 'voice';
+  });
+
   // Header Details
   const getDMPartner = () => {
     if (!activeChannel || !activeChannel.name) return null;
@@ -469,9 +493,11 @@ export default function ChatWindow() {
         {/* Messages Body */}
         <div 
           ref={messagesContainerRef}
-          className={`flex-grow overflow-y-auto p-6 space-y-4 ${wallpaper}`}
+          onScroll={handleScroll}
+          className={`flex-grow overflow-y-auto p-6 space-y-4 ${wallpaper} relative`}
           style={{ backgroundImage: `url('/chat-bg-pattern.png')`, backgroundBlendMode: 'overlay' }}
         >
+
           {filteredMessages.map((msg) => {
             const isSelf = msg.sender_id?.toLowerCase() === profile?.id?.toLowerCase() || msg.user_id?.toLowerCase() === profile?.id?.toLowerCase();
             
@@ -485,12 +511,12 @@ export default function ChatWindow() {
                 <div className="relative max-w-[70%]">
                   
                   {/* Reaction Hover Palette */}
-                  <div className="absolute -top-6 right-2 hidden group-hover:flex items-center gap-1 bg-white dark:bg-slate-800 shadow-md border border-slate-150 rounded-full px-2 py-1 z-20 pb-2 -mb-2">
+                  <div className="absolute -top-[30px] right-0 hidden group-hover:flex items-center gap-1 bg-white dark:bg-slate-800 shadow-md border border-slate-200 rounded-full px-2 py-1 z-50">
                     {['👍', '❤️', '😂', '😮', '😢', '🔥'].map(emoji => (
                       <button 
                         key={emoji} 
                         onClick={() => handleAddReaction(msg.id, emoji)}
-                        className="hover:scale-125 transition-transform text-xs"
+                        className="hover:scale-125 transition-transform text-sm px-0.5"
                       >
                         {emoji}
                       </button>
@@ -585,26 +611,24 @@ export default function ChatWindow() {
                     </div>
 
                     {/* Dropdown Menu Trigger */}
-                    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <select 
-                        onChange={(e) => {
-                          const val = e.target.value;
-                          if (val === 'reply') setReplyTarget(msg);
-                          if (val === 'edit') setEditingMessage(msg.id);
-                          if (val === 'pin') handlePinMessage(msg.id);
-                          if (val === 'delete') handleDeleteForEveryone(msg.id);
-                          e.target.value = '';
-                        }}
-                        className="bg-transparent border-none text-slate-400 cursor-pointer outline-none w-5"
-                        defaultValue=""
+                    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                      <button 
+                        onClick={() => setOpenMenuId(openMenuId === msg.id ? null : msg.id)}
+                        className="text-slate-400 hover:text-slate-600 bg-white/50 hover:bg-white rounded p-0.5"
                       >
-                        <option value="" disabled></option>
-                        <option value="reply">Reply</option>
-                        {isSelf && <option value="edit">Edit</option>}
-                        <option value="pin">Pin</option>
-                        <option value="delete">Delete</option>
-                      </select>
+                        <MoreVertical size={16} />
+                      </button>
                     </div>
+
+                    {/* Custom Dropdown Menu */}
+                    {openMenuId === msg.id && (
+                      <div className="absolute top-8 right-2 bg-slate-100 dark:bg-slate-700 shadow-xl rounded-lg py-1 w-32 border border-slate-200 dark:border-slate-600 z-50 overflow-hidden flex flex-col font-medium text-sm">
+                        <button className="px-4 py-2.5 text-left hover:bg-slate-200 dark:hover:bg-slate-600 border-b border-slate-200 dark:border-slate-600 transition-colors text-slate-700 dark:text-slate-200" onClick={() => { setReplyTarget(msg); setOpenMenuId(null); }}>Reply</button>
+                        {isSelf && <button className="px-4 py-2.5 text-left hover:bg-slate-200 dark:hover:bg-slate-600 border-b border-slate-200 dark:border-slate-600 transition-colors text-slate-700 dark:text-slate-200" onClick={() => { setEditingMessage(msg.id); setOpenMenuId(null); }}>Edit</button>}
+                        <button className="px-4 py-2.5 text-left hover:bg-slate-200 dark:hover:bg-slate-600 border-b border-slate-200 dark:border-slate-600 transition-colors text-slate-700 dark:text-slate-200" onClick={() => { handlePinMessage(msg.id); setOpenMenuId(null); }}>Pin</button>
+                        <button className="px-4 py-2.5 text-left hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors text-rose-500" onClick={() => { handleDeleteForEveryone(msg.id); setOpenMenuId(null); }}>Delete</button>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -612,6 +636,18 @@ export default function ChatWindow() {
           })}
           <div ref={chatEndRef} />
         </div>
+
+        {/* Scroll to bottom button - Centered over chat feed */}
+        {showScrollBottom && (
+          <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 z-40">
+            <button
+              onClick={scrollToBottom}
+              className="bg-white text-slate-500 hover:text-slate-800 p-2.5 rounded-full shadow-md border border-slate-200 transition-all hover:scale-110 flex items-center justify-center"
+            >
+              <ArrowRight size={20} className="transform rotate-90" />
+            </button>
+          </div>
+        )}
 
         {/* Reply Preview Bar */}
         {replyTarget && (
@@ -679,19 +715,63 @@ export default function ChatWindow() {
               <X size={20} className="text-slate-500 hover:text-slate-800" />
             </button>
           </div>
-          <div className="p-4 overflow-y-auto flex-1 grid grid-cols-3 gap-2">
-            <div className="bg-slate-100 p-4 rounded flex flex-col items-center justify-center text-xs text-slate-500">
-              <ImageIcon size={24} />
-              <span>Image1.png</span>
-            </div>
-            <div className="bg-slate-100 p-4 rounded flex flex-col items-center justify-center text-xs text-slate-500">
-              <VideoIcon size={24} />
-              <span>Video.mp4</span>
-            </div>
-            <div className="bg-slate-100 p-4 rounded flex flex-col items-center justify-center text-xs text-slate-500">
-              <FileText size={24} />
-              <span>Doc.pdf</span>
-            </div>
+          
+          {/* Tabs */}
+          <div className="flex items-center border-b border-slate-200 dark:border-slate-700 shrink-0">
+            <button 
+              onClick={() => setMediaTabType('media')}
+              className={`flex-1 py-3 text-sm font-medium text-center border-b-2 transition-colors ${
+                mediaTabType === 'media' ? 'border-emerald-600 text-emerald-600' : 'border-transparent text-slate-500 hover:text-slate-700'
+              }`}
+            >
+              Media
+            </button>
+            <button 
+              onClick={() => setMediaTabType('docs')}
+              className={`flex-1 py-3 text-sm font-medium text-center border-b-2 transition-colors ${
+                mediaTabType === 'docs' ? 'border-emerald-600 text-emerald-600' : 'border-transparent text-slate-500 hover:text-slate-700'
+              }`}
+            >
+              Docs
+            </button>
+          </div>
+
+          <div className="p-4 overflow-y-auto flex-1 content-start grid grid-cols-2 gap-3 auto-rows-max">
+            {filteredSharedMedia.length > 0 ? (
+              filteredSharedMedia.map((mediaMsg) => {
+                const isImage = mediaMsg.message_type === 'image';
+                const isVideo = mediaMsg.message_type === 'video';
+                const isDoc = mediaMsg.message_type === 'document' || mediaMsg.message_type === 'voice';
+
+                return (
+                  <div key={mediaMsg.id} className="bg-slate-100 dark:bg-slate-700 rounded overflow-hidden flex flex-col group relative h-28 cursor-pointer shadow-sm border border-slate-200 dark:border-slate-600">
+                    <a href={mediaMsg.media_url} target="_blank" rel="noopener noreferrer" className="w-full h-full flex flex-col">
+                      {isImage && (
+                        <div className="w-full h-full bg-cover bg-center" style={{ backgroundImage: `url(${mediaMsg.media_url})` }}></div>
+                      )}
+                      {isVideo && (
+                        <div className="w-full h-full bg-slate-900 flex items-center justify-center relative">
+                          <VideoIcon size={24} className="text-white opacity-80" />
+                          <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-all"></div>
+                        </div>
+                      )}
+                      {isDoc && (
+                        <div className="w-full h-full bg-slate-50 dark:bg-slate-600 flex flex-col items-center justify-center p-2 text-emerald-600 dark:text-emerald-400">
+                          {mediaMsg.message_type === 'voice' ? <Mic size={24} /> : <FileText size={24} />}
+                          <span className="text-[10px] mt-1 text-slate-500 dark:text-slate-300 truncate w-full text-center">
+                            {mediaMsg.message_type === 'voice' ? 'Voice Note' : 'Document'}
+                          </span>
+                        </div>
+                      )}
+                    </a>
+                  </div>
+                );
+              })
+            ) : (
+              <div className="col-span-2 text-center text-sm text-slate-500 mt-10">
+                No {mediaTabType} shared in this chat yet.
+              </div>
+            )}
           </div>
         </div>
       )}

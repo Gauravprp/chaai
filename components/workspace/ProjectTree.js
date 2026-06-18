@@ -16,7 +16,10 @@ const toUUID = (str) => {
 export default function ProjectTree({ onSelectView }) {
   const {
     members,
+    activeProject,
+    channels,
     activeChannel,
+    setActiveChannel,
     getOrCreateDMChannel,
     directChatSummary,
   } = useWorkspace();
@@ -27,35 +30,55 @@ export default function ProjectTree({ onSelectView }) {
   };
 
   // Sort members by last message timestamp in directChatSummary (newest on top)
-  const getSortedMembers = () => {
-    return [...members].sort((a, b) => {
-      const uuidA = toUUID(a.id);
-      const uuidB = toUUID(b.id);
-      const summaryA = directChatSummary?.[uuidA];
-      const summaryB = directChatSummary?.[uuidB];
-      
-      const timeA = summaryA?.lastMessage?.created_at ? new Date(summaryA.lastMessage.created_at).getTime() : 0;
-      const timeB = summaryB?.lastMessage?.created_at ? new Date(summaryB.lastMessage.created_at).getTime() : 0;
-      
-      if (timeA !== timeB) {
-        return timeB - timeA;
-      }
-      
-      // Fallback to alphabetical sorting of names
-      return (a.name || '').localeCompare(b.name || '');
-    });
-  };
-
-  const sortedMembers = getSortedMembers();
+  const projectMembers = members.filter(m => activeProject?.employees?.includes(m.id) || activeProject?.id === 'all');
+  
+  const sortedMembers = [...projectMembers].sort((a, b) => {
+    const uuidA = toUUID(a.id);
+    const uuidB = toUUID(b.id);
+    const summaryA = directChatSummary?.[uuidA];
+    const summaryB = directChatSummary?.[uuidB];
+    
+    const timeA = summaryA?.lastMessage?.created_at ? new Date(summaryA.lastMessage.created_at).getTime() : 0;
+    const timeB = summaryB?.lastMessage?.created_at ? new Date(summaryB.lastMessage.created_at).getTime() : 0;
+    
+    if (timeA !== timeB) {
+      return timeB - timeA;
+    }
+    
+    // Fallback to alphabetical sorting of names
+    return (a.name || '').localeCompare(b.name || '');
+  });
 
   return (
     <div className="flex-1 flex flex-col min-h-0 overflow-y-auto py-4 px-2 space-y-4">
+      {/* 0. Group Chat Section */}
+      {channels.length > 0 && (
+        <div className="space-y-1">
+          <button
+            onClick={() => {
+              setActiveChannel(channels[0]);
+              onSelectView('chat');
+            }}
+            className={`w-full flex items-center gap-2.5 p-2 rounded-lg text-left text-sm ${
+              activeChannel?.id === channels[0]?.id ? 'bg-indigo-50/60 text-indigo-600 font-semibold' : 'text-slate-700 hover:bg-slate-100'
+            } smooth-transition`}
+          >
+            <div className="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center shrink-0">
+              <Folder size={16} />
+            </div>
+            <div className="flex-1 truncate">
+              <div className="font-medium">Project Group Chat</div>
+            </div>
+          </button>
+        </div>
+      )}
+
       {/* 1. Employees Section */}
       <div className="space-y-2 flex-1 flex flex-col min-h-0">
         <div className="flex items-center justify-between px-2 text-xs font-bold text-slate-500 uppercase tracking-wider">
           <span className="flex items-center gap-1.5">
             <Users size={14} className="text-slate-400" />
-            <span>Employees Chat</span>
+            <span>Members</span>
           </span>
           <span className="text-[10px] bg-slate-200/60 text-slate-600 px-1.5 py-0.5 rounded-full font-semibold">
             {sortedMembers.length}
@@ -84,14 +107,14 @@ export default function ProjectTree({ onSelectView }) {
                     alt={member.name}
                     className="w-8 h-8 rounded-lg object-cover border border-slate-200"
                   />
-                  <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white"></span>
+                  <span className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border-2 border-white ${member.isActive !== false ? 'bg-emerald-500' : 'bg-slate-400'}`}></span>
                 </div>
                 <div className="truncate flex-1">
                   <div className="flex items-center justify-between">
                     <span className="truncate font-medium">{member.name}</span>
                     {unreadCount > 0 && (
-                      <span className="bg-rose-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full shrink-0 min-w-4 text-center">
-                        {unreadCount}
+                      <span className="bg-rose-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center shrink-0">
+                        {unreadCount > 9 ? '9+' : unreadCount}
                       </span>
                     )}
                   </div>

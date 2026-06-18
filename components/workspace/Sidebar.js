@@ -1,14 +1,15 @@
 'use client';
 
 import React, { useState } from 'react';
-import WorkspaceSwitcher from './WorkspaceSwitcher';
 import ProjectTree from './ProjectTree';
 import { useAuth } from '@/contexts/AuthContext';
+import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { LogOut, Settings, User } from 'lucide-react';
 import { generateAvatar } from '@/utils/avatar';
 
 export default function Sidebar({ currentView, onSelectView }) {
   const { profile, logout, updateProfile } = useAuth();
+  const { activeProject } = useWorkspace();
   const [showSettings, setShowSettings] = useState(false);
   const [name, setName] = useState(profile?.name || '');
   const [role, setRole] = useState(profile?.role || '');
@@ -26,9 +27,9 @@ export default function Sidebar({ currentView, onSelectView }) {
 
   return (
     <aside className="w-64 bg-slate-50 border-r border-slate-200 flex flex-col h-full shrink-0">
-      {/* Top Header & Switcher */}
-      <div className="p-3 border-b border-slate-200 bg-white">
-        <WorkspaceSwitcher />
+      {/* Top Header */}
+      <div className="p-4 border-b border-slate-200 bg-[#4a154b] text-white">
+        <h2 className="text-lg font-bold truncate">{activeProject?.name || 'Project'}</h2>
       </div>
 
       {/* Main Navigation Project Tree */}

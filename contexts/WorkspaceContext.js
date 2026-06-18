@@ -121,9 +121,10 @@ export function WorkspaceProvider({ children }) {
   };
 
   const initMockProjects = () => {
-    const mockProj = { id: toUUID('mock-proj-id'), name: 'Main Development', description: 'Dyzo and TeamFlow Collaboration' };
-    setProjects([mockProj]);
-    setActiveProject({ id: 'all', name: 'All Projects' });
+    const prpWebsProj = { id: 'prp-webs-default', name: 'PRP Webs', description: 'Company-wide default project for all employees', employees: ['1', '2'] };
+    const mockProj = { id: toUUID('mock-proj-id'), name: 'Main Development', description: 'Dyzo and TeamFlow Collaboration', employees: ['1'] };
+    setProjects([prpWebsProj, mockProj]);
+    setActiveProject(prpWebsProj);
   };
 
   const initMockTeams = () => {
@@ -214,47 +215,7 @@ export function WorkspaceProvider({ children }) {
 
   const loadWorkspaceDetails = async () => {
     if (!activeWorkspace) return;
-    
-    // Create/Ensure General Chat project and team exist in Supabase for Direct Messages
-    try {
-      const wsUuid = toUUID(activeWorkspace.id);
-      const genProjUuid = toUUID(`general-proj-${activeWorkspace.id}`);
-      const genTeamUuid = toUUID(`general-team-${activeWorkspace.id}`);
-      
-      // 1. Ensure project exists
-      const { data: genProj } = await supabase
-        .from('projects')
-        .select('id')
-        .eq('id', genProjUuid)
-        .maybeSingle();
-        
-      if (!genProj) {
-        await supabase.from('projects').insert({
-          id: genProjUuid,
-          workspace_id: wsUuid,
-          name: 'General Chat',
-          description: 'Default project for workspace-wide chats and direct messages'
-        });
-      }
-      
-      // 2. Ensure team exists
-      const { data: genTeam } = await supabase
-        .from('teams')
-        .select('id')
-        .eq('id', genTeamUuid)
-        .maybeSingle();
-        
-      if (!genTeam) {
-        await supabase.from('teams').insert({
-          id: genTeamUuid,
-          project_id: genProjUuid,
-          name: 'General Chat Team'
-        });
-      }
-    } catch (e) {
-      console.warn("Failed to create general project/team for DMs:", e);
-    }
-
+        let currentMembers = [];
     // 1. Fetch workspace members from Dyzo API (via proxy)
     try {
       const companyId = user?.companyId || 1;
@@ -263,14 +224,20 @@ export function WorkspaceProvider({ children }) {
       if (resData.status === 1 && (resData.employees || resData.results || resData.data)) {
         const list = resData.employees || resData.results || resData.data;
         const mappedEmployees = list
-          .filter(emp => emp.isActive !== false)
-          .map(emp => ({
-            id: (emp._id || emp.id).toString(),
-            name: `${emp.first_name || 'User'} ${emp.last_name || ''}`.trim(),
-            avatar_url: emp.profilePicture || null,
-            role: emp.designation || 'Member',
-            department: emp.department || 'Tech',
-          }));
+          .map(emp => {
+            const rawAvatar = emp.profilePicture || emp.profilePic || emp.profileImage || emp.image || emp.avatar || null;
+            const avatarUrl = rawAvatar ? (rawAvatar.startsWith('http') ? rawAvatar : `https://api.dyzo.ai${rawAvatar.startsWith('/') ? '' : '/'}${rawAvatar}`) : null;
+            
+            return {
+              id: (emp._id || emp.id).toString(),
+              name: `${emp.first_name || emp.firstName || 'User'} ${emp.last_name || emp.lastName || ''}`.trim() || emp.name,
+              avatar_url: avatarUrl,
+              role: emp.designation || emp.role || 'Member',
+              department: emp.department || 'Tech',
+              isActive: emp.isActive !== false && emp.status !== 'Inactive' && emp.status !== 'Suspended'
+            };
+          });
+        currentMembers = mappedEmployees;
         setMembers(mappedEmployees);
 
         // Sync with Supabase profiles in the background using mapped UUIDs
@@ -292,10 +259,11 @@ export function WorkspaceProvider({ children }) {
       }
     } catch (err) {
       console.warn("Failed to fetch Dyzo employees list, using local fallback:", err.message);
-      setMembers([
+      currentMembers = [
         { id: '1', name: 'Rahul Kumar', role: 'Software Engineer', department: 'Engineering' },
         { id: '2', name: 'Amit Sharma', role: 'Product Manager', department: 'Product' }
-      ]);
+      ];
+      setMembers(currentMembers);
     }
 
     // 2. Fetch Projects
@@ -306,16 +274,30 @@ export function WorkspaceProvider({ children }) {
       const projData = await response.json();
       if (projData.status === 1 && (projData.projects || projData.results || projData.data)) {
         const list = projData.projects || projData.results || projData.data || [];
-        const mappedProjects = list.map(p => ({
-          id: (p._id || p.id).toString(),
-          name: p.name,
-          description: p.description || '',
-          employees: p.assignee || p.employees || p.members || [],
-        }));
+        const mappedProjects = list.map(p => {
+          const rawEmployees = p.assignee || p.employees || p.members || [];
+          const employeeIds = rawEmployees.map(emp => (emp._id || emp.id || emp).toString());
+          return {
+            id: (p._id || p.id).toString(),
+            name: p.name,
+            description: p.description || '',
+            employees: employeeIds,
+          };
+        });
         // Filter projects strictly assigned to the current user and not named 'General Chat'
         const myProjects = mappedProjects.filter(p => {
           return p.name !== 'General Chat' && p.employees.some(empId => empId.toString() === employeeId.toString());
         });
+        
+        // Add default PRP Webs project
+        const prpWebsProj = {
+          id: 'prp-webs-default',
+          name: 'PRP Webs',
+          description: 'Company-wide default project for all employees',
+          employees: currentMembers.map(emp => emp.id)
+        };
+        myProjects.unshift(prpWebsProj);
+
         setProjects(myProjects);
 
         // Sync projects to Supabase
@@ -338,7 +320,7 @@ export function WorkspaceProvider({ children }) {
             setActiveProject(freshProj);
           }
         } else if (!activeProject) {
-          setActiveProject({ id: 'all', name: 'All Projects' });
+          setActiveProject(prpWebsProj);
         }
       } else {
         throw new Error("No projects found");
@@ -347,7 +329,7 @@ export function WorkspaceProvider({ children }) {
       console.warn("Failed to fetch Dyzo projects, using mock:", err.message);
       initMockProjects();
       if (!activeProject) {
-        setActiveProject({ id: 'all', name: 'All Projects' });
+        setActiveProject({ id: 'prp-webs-default', name: 'PRP Webs', description: 'Company-wide default project for all employees' });
       }
     }
 
