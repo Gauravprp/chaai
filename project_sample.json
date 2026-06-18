@@ -1,0 +1,278 @@
+{
+  "_id": 4518,
+  "status": [
+    {
+      "id": "c4496ad3-1a14-4f84-9635-5caf29e489dc",
+      "name": "Not Started Yet",
+      "color": "#DC3464",
+      "value": "not_started_yet"
+    },
+    {
+      "id": "9ce6edbf-20b6-4896-a36b-e925389e0719",
+      "name": "In progress",
+      "color": "#3092F5",
+      "value": "in_progress"
+    },
+    {
+      "id": "a2161493-9ee2-48ac-b46f-3eeae774f6e8",
+      "name": "Completed",
+      "color": "#30F558",
+      "value": "completed"
+    },
+    {
+      "id": "78be3be6-fab6-455f-a930-56a6ba2ee258",
+      "name": "Pending",
+      "color": "#BCBCBC",
+      "value": "pending"
+    },
+    {
+      "id": "138750d9-2008-4ef1-9577-5b4440bb9bdf",
+      "name": "Archived",
+      "color": "#6C757D",
+      "value": "archived"
+    },
+    {
+      "id": "5db41f8e-449e-4112-9337-279657f135ba",
+      "name": "Pushed Back",
+      "color": "#bc43db",
+      "value": "pushed_back"
+    },
+    {
+      "id": "c3723273-3de6-4750-ade4-548c98ce61f0",
+      "name": "QA",
+      "color": "#2d3b94",
+      "value": "qa"
+    },
+    {
+      "id": "33b9cc9b-5ec5-4d72-aece-267fc8f516bd",
+      "name": "Blocked",
+      "color": "#F97316",
+      "value": "blocked"
+    },
+    {
+      "id": "61f8712e-055c-4fc8-a016-e2c61093f48e",
+      "name": "On Hold - Client",
+      "color": "#212121",
+      "value": "on_hold_-_client"
+    }
+  ],
+  "companyId": 2,
+  "name": "AVP_SEO & Marketing",
+  "description": null,
+  "dateAdded": "2026-03-06T10:42:08.565211Z",
+  "client": null,
+  "dueDate": "2026-06-04T09:36:53.153913Z",
+  "priority": "medium",
+  "client_name": null,
+  "project_leader": null,
+  "project_leader_name": null,
+  "isActive": true,
+  "assignee": [
+    86,
+    2076,
+    1066,
+    1588,
+    693,
+    54,
+    687,
+    1822,
+    1740,
+    48,
+    1998,
+    1305,
+    28,
+    692
+  ],
+  "assignee_details": [
+    {
+      "_id": 86,
+      "name": "Divyanshu @DV",
+      "profile_picture": null,
+      "email": "divyanshu.kumawat@prpwebs.in",
+      "designation": "Web Developer"
+    },
+    {
+      "_id": 2076,
+      "name": "vidit prpwebs",
+      "profile_picture": null,
+      "email": "vidit.prpwebs@gmail.com",
+      "designation": ""
+    },
+    {
+      "_id": 1066,
+      "name": "Ankita Jaiswal",
+      "profile_picture": null,
+      "email": "ankita.jaiswal@prpwebs.in",
+      "designation": "Project Manager"
+    },
+    {
+      "_id": 1588,
+      "name": "atul prpwebs",
+      "profile_picture": "/media/profile_pictures/DSC03811.JPG",
+      "email": "atul.prpwebs@gmail.com",
+      "designation": "UX UI Designer"
+    },
+    {
+      "_id": 693,
+      "name": "Chavi Dhabaria",
+      "profile_picture": "/media/profile_pictures/chavi_dhabaria.jpg",
+      "email": "chavi.prpwebs@gmail.com",
+      "designation": "SEO Executive"
+    },
+    {
+      "_id": 54,
+      "name": "punit pareek",
+      "profile_picture": "/media/profile_pictures/1663687257908_Stryviq_WPKiFfP.jpg",
+      "email": "punit@prpwebs.in",
+      "designation": "Software Developer"
+    },
+    {
+      "_id": 687,
+      "name": "Cg Pandey",
+      "profile_picture": "/media/profile_pictures/cg_7aNCsAv.jpeg",
+      "email": "cg@prpwebs.com",
+      "designation": ""
+    },
+    {
+      "_id": 1822,
+      "name": "Sanjay Suthar",
+      "profile_picture": "/media/profile_pictures/PRP_WEBS_promotion_featuring_Sanjay_Suthar_1.png",
+      "email": "sanjay@prpwebs.in",
+      "designation": "Web developer"
+    },
+    {
+      "_id": 1740,
+      "name": "mansoor",
+      "profile_picture": null,
+      "email": "mansoor@avpayurveda.com",
+      "designation": ""
+    },
+    {
+      "_id": 48,
+      "name": "Gaurav Singh",
+      "profile_picture": "/media/profile_pictures/ChatGPT_Image_Apr_1_2026_03_34_36_PM_1.png",
+      "email": "gaurav@prpwebs.in",
+      "designation": "SoftwareEngineer"
+    },
+    {
+      "_id": 1998,
+      "name": "Anushree Sharda",
+      "profile_picture": null,
+      "email": "anushree@prpwebs.in",
+      "designation": "Software Developer"
+    },
+    {
+      "_id": 1305,
+      "name": "Anusha Chowdam",
+      "profile_picture": null,
+      "email": "anusha@prpwebs.in",
+      "designation": "QA"
+    },
+    {
+      "_id": 28,
+      "name": "Vikas Pareek",
+      "profile_picture": "/media/profile_pictures/Skype_Picture_2025_02_03T05_56_26_764Z.jpeg",
+      "email": "vikas.pareek@prpwebs.in",
+      "designation": "Software Engineer"
+    },
+    {
+      "_id": 692,
+      "name": "sejal jain",
+      "profile_picture": null,
+      "email": "sejal.jain@prpwebs.in",
+      "designation": null
+    }
+  ],
+  "client_assignee_details": [],
+  "stagingServerURL": null,
+  "liveServerURL": null,
+  "budget": null,
+  "currencyType": null,
+  "total_tasks": 101,
+  "completed_tasks": 74,
+  "total_hours": 163.85,
+  "accessLevels": {
+    "28": "admin",
+    "48": "editor",
+    "54": "editor",
+    "86": "editor",
+    "687": "editor",
+    "692": "editor",
+    "693": "editor",
+    "1066": "admin",
+    "1305": "editor",
+    "1588": "editor",
+    "1740": "admin",
+    "1822": "editor",
+    "1998": "editor",
+    "2076": "editor"
+  },
+  "projectColor": "#b61d15",
+  "sections": [
+    {
+      "id": 3804,
+      "project": 4518,
+      "user": 1822,
+      "name": "Recently Assigned",
+      "orderNumber": 1,
+      "created_at": "2026-03-10T05:57:29.809190Z",
+      "updated_at": "2026-06-10T05:11:11.281989Z",
+      "canDelete": false,
+      "isCollapse": false,
+      "task_count": 20
+    },
+    {
+      "id": 3797,
+      "project": 4518,
+      "user": 1066,
+      "name": "March / Apr - 26 (Tech)",
+      "orderNumber": 1,
+      "created_at": "2026-03-06T10:42:08.586835Z",
+      "updated_at": "2026-05-12T11:24:51.265915Z",
+      "canDelete": false,
+      "isCollapse": false,
+      "task_count": 19
+    },
+    {
+      "id": 3798,
+      "project": 4518,
+      "user": 1066,
+      "name": "March / Apr - 26 (SEO/Marketing)",
+      "orderNumber": 10496.0009,
+      "created_at": "2026-03-06T10:43:08.186443Z",
+      "updated_at": "2026-06-11T06:03:10.202482Z",
+      "canDelete": true,
+      "isCollapse": false,
+      "task_count": 24
+    },
+    {
+      "id": 4150,
+      "project": 4518,
+      "user": 1066,
+      "name": "May - 26",
+      "orderNumber": 10731.001,
+      "created_at": "2026-04-27T11:42:53.298142Z",
+      "updated_at": "2026-05-11T04:33:39.413960Z",
+      "canDelete": true,
+      "isCollapse": false,
+      "task_count": 37
+    },
+    {
+      "id": 4499,
+      "project": 4518,
+      "user": 2076,
+      "name": "Untitled Section",
+      "orderNumber": 11038.001,
+      "created_at": "2026-05-12T05:59:04.686902Z",
+      "updated_at": "2026-05-26T04:59:52.555612Z",
+      "canDelete": true,
+      "isCollapse": true,
+      "task_count": 0
+    }
+  ],
+  "isDeleted": false,
+  "in_progress_tasks": 23,
+  "allocated_hours": "20000.00",
+  "isCompleted": false,
+  "invited_employees": []
+}
