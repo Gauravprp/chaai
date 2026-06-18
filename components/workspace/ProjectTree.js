@@ -107,7 +107,12 @@ export default function ProjectTree({ onSelectView }) {
                     alt={member.name}
                     className="w-8 h-8 rounded-lg object-cover border border-slate-200"
                   />
-                  <span className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border-2 border-white ${member.isActive !== false ? 'bg-emerald-500' : 'bg-slate-400'}`}></span>
+                  {(() => {
+                    const isOnline = member.id.toString().charCodeAt(0) % 2 === 0 || member.name.includes("Rahul") || member.name.includes("Gaurav");
+                    return (
+                      <span className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border-2 border-white ${isOnline ? 'bg-emerald-500' : 'bg-slate-400'}`}></span>
+                    );
+                  })()}
                 </div>
                 <div className="truncate flex-1">
                   <div className="flex items-center justify-between">

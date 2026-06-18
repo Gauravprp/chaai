@@ -43,6 +43,13 @@ export default function ChatWindow() {
   const [scheduleTime, setScheduleTime] = useState('');
   const [showScrollBottom, setShowScrollBottom] = useState(false);
   const [openMenuId, setOpenMenuId] = useState(null);
+  
+  // AI Tools State
+  const [activeAIPill, setActiveAIPill] = useState(null);
+  const [aiTargetLang, setAiTargetLang] = useState('Hindi');
+  const [isInputFocused, setIsInputFocused] = useState(false);
+  const [translatedMessages, setTranslatedMessages] = useState({});
+  const [translatingMsgId, setTranslatingMsgId] = useState(null);
 
   // Audio Recording Mock
   const [isRecording, setIsRecording] = useState(false);
@@ -79,11 +86,77 @@ export default function ChatWindow() {
 
   const handleScroll = (e) => {
     const { scrollTop, scrollHeight, clientHeight } = e.target;
-    // Show scroll button if we scrolled up significantly
-    if (scrollHeight - scrollTop - clientHeight > 100) {
-      setShowScrollBottom(true);
-    } else {
-      setShowScrollBottom(false);
+    // Show scroll bottom button if user scrolls up more than 100px from bottom
+    const isAtBottom = scrollHeight - scrollTop - clientHeight < 100;
+    setShowScrollBottom(!isAtBottom);
+  };
+
+  const handleAIRewrite = async (mode) => {
+    if (!inputText.trim()) return;
+    
+    let wordLimit = null;
+    if (mode === 'expand' || mode === 'shorten') {
+      const input = window.prompt(`Enter word limit for ${mode} (optional, e.g. 50):`);
+      if (input && !isNaN(parseInt(input))) {
+        wordLimit = parseInt(input);
+      }
+    }
+
+    setActiveAIPill(mode);
+    try {
+      const res = await fetch('/api/ai/rewrite', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: inputText, mode, wordLimit })
+      });
+      const data = await res.json();
+      if (data.result) setInputText(data.result);
+      else if (data.error) toast.error(data.error);
+    } catch (err) {
+      toast.error('AI Rewrite failed: ' + err.message);
+    } finally {
+      setActiveAIPill(null);
+    }
+  };
+
+  const handleAITranslate = async (lang) => {
+    if (!inputText.trim()) return;
+    setActiveAIPill('translation');
+    try {
+      const res = await fetch('/api/ai/translate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: inputText, language: lang })
+      });
+      const data = await res.json();
+      if (data.result) setInputText(data.result);
+      else if (data.error) toast.error(data.details || data.error);
+    } catch (err) {
+      toast.error('AI Translation failed: ' + err.message);
+    } finally {
+      setActiveAIPill(null);
+    }
+  };
+
+  const handleInlineTranslate = async (msg, lang) => {
+    setTranslatingMsgId(msg.id);
+    setOpenMenuId(null);
+    try {
+      const res = await fetch('/api/ai/translate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: msg.content, language: lang })
+      });
+      const data = await res.json();
+      if (data.result) {
+        setTranslatedMessages(prev => ({ ...prev, [msg.id]: { lang, text: data.result } }));
+      } else if (data.error) {
+        toast.error(data.error);
+      }
+    } catch (err) {
+      toast.error('Inline Translation failed');
+    } finally {
+      setTranslatingMsgId(null);
     }
   };
 
@@ -582,7 +655,18 @@ export default function ChatWindow() {
                           </div>
                         )}
                         {!msg.isUploading && !['image', 'video'].includes(msg.message_type) && (
-                          <p className="whitespace-pre-wrap leading-relaxed">{msg.content}</p>
+                          <div className="flex flex-col gap-1">
+                            <p className="whitespace-pre-wrap leading-relaxed">{msg.content}</p>
+                            {translatingMsgId === msg.id && (
+                              <p className="text-[10px] text-emerald-600 dark:text-emerald-400 italic animate-pulse mt-1">Translating...</p>
+                            )}
+                            {translatedMessages[msg.id] && (
+                              <div className="mt-1 pt-1.5 border-t border-slate-200 dark:border-slate-600/50">
+                                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">{translatedMessages[msg.id].lang} translation</span>
+                                <p className="whitespace-pre-wrap leading-relaxed text-[13px] text-slate-700 dark:text-slate-200 mt-0.5">{translatedMessages[msg.id].text}</p>
+                              </div>
+                            )}
+                          </div>
                         )}
                       </div>
                     )}
@@ -625,6 +709,8 @@ export default function ChatWindow() {
                       <div className="absolute top-8 right-2 bg-slate-100 dark:bg-slate-700 shadow-xl rounded-lg py-1 w-32 border border-slate-200 dark:border-slate-600 z-50 overflow-hidden flex flex-col font-medium text-sm">
                         <button className="px-4 py-2.5 text-left hover:bg-slate-200 dark:hover:bg-slate-600 border-b border-slate-200 dark:border-slate-600 transition-colors text-slate-700 dark:text-slate-200" onClick={() => { setReplyTarget(msg); setOpenMenuId(null); }}>Reply</button>
                         {isSelf && <button className="px-4 py-2.5 text-left hover:bg-slate-200 dark:hover:bg-slate-600 border-b border-slate-200 dark:border-slate-600 transition-colors text-slate-700 dark:text-slate-200" onClick={() => { setEditingMessage(msg.id); setOpenMenuId(null); }}>Edit</button>}
+                        <button className="px-4 py-2.5 text-left hover:bg-slate-200 dark:hover:bg-slate-600 border-b border-slate-200 dark:border-slate-600 transition-colors text-slate-700 dark:text-slate-200" onClick={() => { handleInlineTranslate(msg, 'English'); }}>Translate (EN)</button>
+                        <button className="px-4 py-2.5 text-left hover:bg-slate-200 dark:hover:bg-slate-600 border-b border-slate-200 dark:border-slate-600 transition-colors text-slate-700 dark:text-slate-200" onClick={() => { handleInlineTranslate(msg, 'Hindi'); }}>Translate (HI)</button>
                         <button className="px-4 py-2.5 text-left hover:bg-slate-200 dark:hover:bg-slate-600 border-b border-slate-200 dark:border-slate-600 transition-colors text-slate-700 dark:text-slate-200" onClick={() => { handlePinMessage(msg.id); setOpenMenuId(null); }}>Pin</button>
                         <button className="px-4 py-2.5 text-left hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors text-rose-500" onClick={() => { handleDeleteForEveryone(msg.id); setOpenMenuId(null); }}>Delete</button>
                       </div>
@@ -662,6 +748,62 @@ export default function ChatWindow() {
           </div>
         )}
 
+        {/* AI Tools Pills Panel */}
+        {(isInputFocused || inputText.trim().length > 0) && (
+          <div className="bg-white dark:bg-slate-800 px-4 py-2 border-t border-slate-200 dark:border-slate-700 flex items-center gap-2 overflow-x-auto no-scrollbar shrink-0">
+            <Sparkles size={14} className="text-emerald-500 mr-1" />
+            {['professional', 'formal', 'shorten', 'expand', 'grammar_fix'].map((mode) => (
+              <button
+                key={mode}
+                onClick={() => handleAIRewrite(mode)}
+                disabled={activeAIPill !== null || !inputText.trim()}
+                className={`px-3 py-1 text-[11px] font-medium rounded-full whitespace-nowrap transition-all ${
+                  activeAIPill === mode 
+                    ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 opacity-70 cursor-not-allowed animate-pulse'
+                    : 'bg-slate-100 text-slate-600 hover:bg-emerald-50 hover:text-emerald-600 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed'
+                }`}
+              >
+                {activeAIPill === mode ? 'Processing...' : mode.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+              </button>
+            ))}
+            
+            <div className="h-4 w-px bg-slate-300 dark:bg-slate-600 mx-1"></div>
+            
+            <div className="relative flex items-center group">
+              <button
+                disabled={activeAIPill !== null || !inputText.trim()}
+                onClick={() => handleAITranslate(aiTargetLang)}
+                className={`px-3 py-1 text-[11px] font-medium rounded-full whitespace-nowrap transition-all flex items-center gap-1 ${
+                  activeAIPill === 'translation'
+                    ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400 opacity-70 cursor-not-allowed animate-pulse'
+                    : 'bg-slate-100 text-slate-600 hover:bg-indigo-50 hover:text-indigo-600 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed'
+                }`}
+              >
+                <Languages size={12} />
+                {activeAIPill === 'translation' ? 'Translating...' : `Translation (${aiTargetLang === 'Hindi' ? 'EN → HI' : 'HI → EN'})`}
+              </button>
+              
+              {/* Simple dropdown overlay on hover */}
+              {inputText.trim() && activeAIPill === null && (
+                <div className="absolute bottom-full mb-1 left-0 hidden group-hover:flex flex-col bg-white dark:bg-slate-800 shadow-lg border border-slate-200 dark:border-slate-700 rounded overflow-hidden z-10 w-28 text-[11px]">
+                  <button 
+                    className="px-3 py-2 text-left hover:bg-slate-50 dark:hover:bg-slate-700"
+                    onClick={() => { setAiTargetLang('English'); handleAITranslate('English'); }}
+                  >
+                    English
+                  </button>
+                  <button 
+                    className="px-3 py-2 text-left hover:bg-slate-50 dark:hover:bg-slate-700"
+                    onClick={() => { setAiTargetLang('Hindi'); handleAITranslate('Hindi'); }}
+                  >
+                    Hindi
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Input Controls Panel */}
         <div className="p-3 bg-[#f0f2f5] dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex items-center gap-3 shrink-0">
           <button title="Smile Emojis">
@@ -683,6 +825,8 @@ export default function ChatWindow() {
               type="text"
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
+              onFocus={() => setIsInputFocused(true)}
+              onBlur={() => setTimeout(() => setIsInputFocused(false), 200)}
               placeholder="Type a message..."
               className="w-full bg-white dark:bg-slate-700 text-slate-800 dark:text-white rounded-lg px-4 py-2 text-sm focus:outline-none border-none shadow-sm"
             />
