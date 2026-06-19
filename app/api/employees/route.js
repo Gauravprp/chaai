@@ -29,6 +29,16 @@ export async function GET(req) {
       if (Array.isArray(data.results)) {
         data.results = data.results.filter(emp => emp.isActive === true);
       }
+      const prefixImage = (emp) => {
+        const field = emp.profile_picture ? 'profile_picture' : (emp.profile_pic ? 'profile_pic' : (emp.profilePicture ? 'profilePicture' : null));
+        if (field && emp[field] && typeof emp[field] === 'string' && !emp[field].startsWith('http')) {
+          emp[field] = `https://api.dyzo.ai${emp[field].startsWith('/') ? '' : '/'}${emp[field]}`;
+        }
+        return emp;
+      };
+      if (Array.isArray(data.employees)) data.employees.map(prefixImage);
+      if (Array.isArray(data.data)) data.data.map(prefixImage);
+      if (Array.isArray(data.results)) data.results.map(prefixImage);
     }
     return NextResponse.json(data);
   } catch (err) {
@@ -36,4 +46,3 @@ export async function GET(req) {
     return NextResponse.json({ status: 0, error: err.message }, { status: 500 });
   }
 }
-

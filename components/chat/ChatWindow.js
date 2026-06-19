@@ -8,10 +8,13 @@ import {
   Send, Smile, MessageSquare, Sparkles, Languages, Check, ArrowRight, 
   Info, AlertCircle, Copy, Trash2, Edit3, CornerUpLeft, Paperclip, 
   Mic, Search, Pin, Star, Archive, ShieldAlert, FileText, Image as ImageIcon, 
-  Video as VideoIcon, CheckCheck, MoreVertical, X, Calendar, UserCheck
+  Video as VideoIcon, CheckCheck, MoreVertical, X, Calendar, UserCheck,
+  Square, Loader2
 } from 'lucide-react';
 import { generateAvatar } from '@/utils/avatar';
 import { toast } from "toastflux";
+import { parseTaskCommand } from '@/utils/taskParser';
+import VoicePlayer from './VoicePlayer';
 
 const toUUID = (str) => {
   if (!str) return '00000000-0000-0000-0000-000000000000';
@@ -23,7 +26,7 @@ const toUUID = (str) => {
 };
 
 export default function ChatWindow() {
-  const { activeChannel, messages, setMessages, members } = useWorkspace();
+  const { activeChannel, messages, setMessages, members, createTask } = useWorkspace();
   const { profile } = useAuth();
   
   // State
@@ -44,6 +47,12 @@ export default function ChatWindow() {
   const [showScrollBottom, setShowScrollBottom] = useState(false);
   const [openMenuId, setOpenMenuId] = useState(null);
   
+  // Autocomplete State
+  const [showAutocomplete, setShowAutocomplete] = useState(false);
+  const [autocompleteSuggestions, setAutocompleteSuggestions] = useState([]);
+  const [autocompleteType, setAutocompleteType] = useState('command'); // 'command' | 'user'
+  const [autocompleteIndex, setAutocompleteIndex] = useState(0);
+
   // AI Tools State
   const [activeAIPill, setActiveAIPill] = useState(null);
   const [aiTargetLang, setAiTargetLang] = useState('Hindi');
@@ -51,10 +60,14 @@ export default function ChatWindow() {
   const [translatedMessages, setTranslatedMessages] = useState({});
   const [translatingMsgId, setTranslatingMsgId] = useState(null);
 
-  // Audio Recording Mock
+  // Audio Recording State
   const [isRecording, setIsRecording] = useState(false);
   const [recordingTime, setRecordingTime] = useState(0);
+  const [isUploadingVoice, setIsUploadingVoice] = useState(false);
+  const mediaRecorderRef = useRef(null);
+  const audioChunksRef = useRef([]);
   const recordingTimer = useRef(null);
+  const textInputRef = useRef(null);
 
   // Wallpaper and Theme
   const [wallpaper, setWallpaper] = useState('bg-[#efeae2]'); // Classic WhatsApp Cream/Beige
@@ -188,20 +201,71 @@ export default function ChatWindow() {
     }
   };
 
-  // Recording Timer
-  const startRecording = () => {
-    setIsRecording(true);
-    setRecordingTime(0);
-    recordingTimer.current = setInterval(() => {
-      setRecordingTime(prev => prev + 1);
-    }, 1000);
+  // Real Audio Recording Implementation
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      audioChunksRef.current = [];
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          audioChunksRef.current.push(event.data);
+        }
+      };
+
+      mediaRecorder.onstop = async () => {
+        // Stream tracks must be stopped to release mic
+        stream.getTracks().forEach(track => track.stop());
+        
+        if (audioChunksRef.current.length === 0) return;
+        
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+        audioChunksRef.current = [];
+        
+        await uploadVoiceNote(audioBlob);
+      };
+
+      mediaRecorder.start();
+      setIsRecording(true);
+      setRecordingTime(0);
+      recordingTimer.current = setInterval(() => {
+        setRecordingTime(prev => prev + 1);
+      }, 1000);
+    } catch (err) {
+      console.error("Microphone access error:", err);
+      if (!navigator.mediaDevices) {
+        toast.error("Microphone API not supported in this browser/context.");
+      } else {
+        toast.error(`Mic Error: ${err.message || err.name}`);
+      }
+    }
   };
 
-  const stopRecording = async () => {
+  const cancelRecording = () => {
+    if (mediaRecorderRef.current && isRecording) {
+      // Clear chunks so onstop doesn't upload
+      audioChunksRef.current = [];
+      mediaRecorderRef.current.stop();
+    }
     clearInterval(recordingTimer.current);
     setIsRecording(false);
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorderRef.current && isRecording) {
+      mediaRecorderRef.current.stop();
+    }
+    clearInterval(recordingTimer.current);
+    setIsRecording(false);
+  };
+
+  const uploadVoiceNote = async (audioBlob) => {
+    if (!activeChannel || !profile) return;
+    setIsUploadingVoice(true);
     
-    // Simulate sending a voice note
+    // Add optimistic temp message
     const tempId = `temp-voice-${Date.now()}`;
     const optimisticMessage = {
       id: tempId,
@@ -209,10 +273,57 @@ export default function ChatWindow() {
       user_id: toUUID(profile?.id),
       content: `Voice Note (${recordingTime}s)`,
       message_type: 'voice',
+      media_url: URL.createObjectURL(audioBlob),
       created_at: new Date().toISOString(),
       profiles: profile,
     };
     setMessages(prev => [...prev, optimisticMessage]);
+
+    try {
+      const fileName = `voice_${profile.id}_${Date.now()}.webm`;
+      
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('chat-attachments')
+        .upload(fileName, audioBlob, {
+          contentType: 'audio/webm'
+        });
+
+      if (uploadError) throw uploadError;
+
+      const { data: urlData } = supabase.storage
+        .from('chat-attachments')
+        .getPublicUrl(fileName);
+
+      const fileUrl = urlData.publicUrl;
+
+      // Save to database
+      const { data, error } = await supabase
+        .from('messages')
+        .insert({
+          channel_id: toUUID(activeChannel?.id),
+          conversation_id: toUUID(activeChannel?.id),
+          sender_id: toUUID(profile?.id),
+          content: `Voice Note (${recordingTime}s)`,
+          message_type: 'voice',
+          media_url: fileUrl,
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      // Update optimistic message with real data
+      setMessages(prev =>
+        prev.map(msg => (msg.id === tempId ? { ...msg, ...data, user_id: data.sender_id } : msg))
+      );
+    } catch (err) {
+      console.error("Failed to upload voice note:", err);
+      toast.error("Failed to send voice message");
+      // Remove optimistic message
+      setMessages(prev => prev.filter(msg => msg.id !== tempId));
+    } finally {
+      setIsUploadingVoice(false);
+    }
   };
 
   // Message Send Handler
@@ -223,7 +334,73 @@ export default function ChatWindow() {
     const messageContent = inputText;
     setInputText('');
     setReplyTarget(null);
+    setShowAutocomplete(false);
 
+    // Parse for Tasks
+    const taskParse = parseTaskCommand(messageContent, members);
+    if (taskParse && taskParse.error) {
+      toast.error(`❌ ${taskParse.error}`);
+      return;
+    }
+    
+    // Check if the message is only a task, or task + other text
+    // The parser returns isTask if it contains @task anywhere
+    if (taskParse && taskParse.isTask) {
+        let assignedUserIds = [];
+        let collaboratorIds = [];
+        
+        const isDM = activeChannel?.name?.startsWith('dm_') || activeChannel?.name?.startsWith('dm-');
+        const partner = isDM ? getDMPartner() : null;
+        
+        // Helper to extract valid Dyzo ID (ignoring Supabase UUIDs)
+        const getValidId = (userObj) => {
+           if (!userObj) return null;
+           if (userObj.dyzoId) return userObj.dyzoId;
+           if (userObj.id && !isNaN(userObj.id)) return userObj.id;
+           return null;
+        };
+        
+        // 1. Assignees logic
+        if (taskParse.assignees.length === 0) {
+           const pid = getValidId(partner);
+           if (pid) assignedUserIds = [pid];
+        } else {
+           assignedUserIds = taskParse.assignees.map(getValidId).filter(Boolean);
+        }
+
+        // 2. Collaborators logic
+        if (taskParse.collaborators.length === 0) {
+           const myId = getValidId(profile);
+           if (myId) collaboratorIds.push(myId);
+           
+           const pid = getValidId(partner);
+           if (pid) collaboratorIds.push(pid);
+        } else {
+           collaboratorIds = taskParse.collaborators.map(getValidId).filter(Boolean);
+        }
+        
+        // Ensure the creator and ALL assignees are always in collaborators
+        const creatorId = getValidId(profile);
+        const finalCollaborators = new Set([...collaboratorIds, ...assignedUserIds]);
+        if (creatorId) finalCollaborators.add(creatorId);
+        
+        collaboratorIds = Array.from(finalCollaborators);
+
+        try {
+          await createTask({
+            title: taskParse.title,
+            description: taskParse.description,
+            assigned_users: assignedUserIds,
+            collaborators: collaboratorIds,
+          });
+          toast.success(`✅ Task created successfully`);
+      } catch (err) {
+        toast.error('❌ Failed to create task: ' + err.message);
+        return; // Halt sending if task creation fails and user intended it as a task
+      }
+    }
+
+    // Continue sending the message as a regular chat message too so it shows in history
     const tempId = `temp-${Date.now()}`;
     const optimisticMessage = {
       id: tempId,
@@ -258,6 +435,89 @@ export default function ChatWindow() {
       );
     } catch (err) {
       console.error("Message sync error:", err.message || err.details || err);
+    }
+  };
+
+  // Autocomplete Handlers
+  const COMMANDS = ['@task ', '@description '];
+  
+  const handleInputChange = (e) => {
+    const val = e.target.value;
+    setInputText(val);
+
+    // Detect if we should show autocomplete
+    const cursorPosition = e.target.selectionStart;
+    const textBeforeCursor = val.slice(0, cursorPosition);
+    
+    // Check for commands or mentions
+    const lastAtPos = textBeforeCursor.lastIndexOf('@');
+    if (lastAtPos !== -1) {
+      const searchString = textBeforeCursor.slice(lastAtPos);
+      // If there's no space after @ (or just starting to type)
+      if (!searchString.includes(' ')) {
+        setShowAutocomplete(true);
+        setAutocompleteIndex(0);
+        setAutocompleteType('command');
+        const matches = COMMANDS.filter(c => {
+          if (c === '@description ' && !val.includes('@task')) return false;
+          return c.toLowerCase().startsWith(searchString.toLowerCase());
+        });
+        setAutocompleteSuggestions(matches);
+      } else {
+        setShowAutocomplete(false);
+      }
+    } else {
+      setShowAutocomplete(false);
+    }
+  };
+
+  const handleAutocompleteSelect = (suggestion) => {
+    const input = textInputRef.current;
+    if (!input) return;
+    
+    const cursorPosition = input.selectionStart;
+    const textBeforeCursor = inputText.slice(0, cursorPosition);
+    const textAfterCursor = inputText.slice(cursorPosition);
+    
+    const lastAtPos = textBeforeCursor.lastIndexOf('@');
+    if (lastAtPos === -1) return;
+    
+    let replacement = suggestion;
+    if (suggestion === '@task ') {
+      replacement = '@task  @description ';
+    }
+    
+    const newText = textBeforeCursor.slice(0, lastAtPos) + replacement + textAfterCursor;
+    setInputText(newText);
+    setShowAutocomplete(false);
+    
+    // Focus and adjust cursor
+    setTimeout(() => {
+      input.focus();
+      if (suggestion === '@task ') {
+        // Place cursor between @task and @description
+        const newCursorPos = lastAtPos + '@task '.length;
+        input.setSelectionRange(newCursorPos, newCursorPos);
+      } else {
+        input.setSelectionRange(lastAtPos + replacement.length, lastAtPos + replacement.length);
+      }
+    }, 0);
+  };
+
+  const handleKeyDown = (e) => {
+    if (showAutocomplete && autocompleteSuggestions.length > 0) {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        setAutocompleteIndex(prev => (prev + 1) % autocompleteSuggestions.length);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        setAutocompleteIndex(prev => (prev - 1 + autocompleteSuggestions.length) % autocompleteSuggestions.length);
+      } else if (e.key === 'Enter' || e.key === 'Tab') {
+        e.preventDefault();
+        handleAutocompleteSelect(autocompleteSuggestions[autocompleteIndex]);
+      } else if (e.key === 'Escape') {
+        setShowAutocomplete(false);
+      }
     }
   };
 
@@ -469,6 +729,9 @@ export default function ChatWindow() {
       const partner = getDMPartner();
       return partner ? partner.name : 'Direct Message';
     }
+    if (activeChannel.name === 'general') {
+      return 'Project Group Chat';
+    }
     return `# ${activeChannel.name}`;
   };
 
@@ -484,6 +747,23 @@ export default function ChatWindow() {
 
   const partner = getDMPartner();
   const isPartnerOnline = partner ? (partner.id.toString().charCodeAt(0) % 2 === 0 || partner.name.includes("Rahul") || partner.name.includes("Gaurav")) : false;
+
+  if (!activeChannel) {
+    return (
+      <div className={`flex-1 flex flex-col items-center justify-center h-full overflow-hidden ${isDarkMode ? 'dark bg-slate-900' : 'bg-[#f0f2f5]'}`}>
+        <div className="w-32 h-32 bg-white dark:bg-slate-800 shadow-xl rounded-full flex items-center justify-center mb-8 relative">
+          <MessageSquare size={56} strokeWidth={1.5} className="text-emerald-500" />
+          <div className="absolute top-0 right-0 w-8 h-8 bg-emerald-500 rounded-full border-4 border-[#f0f2f5] dark:border-slate-900 flex items-center justify-center">
+             <Sparkles size={12} className="text-white" />
+          </div>
+        </div>
+        <h2 className="text-3xl font-bold text-slate-800 dark:text-white mb-3">TeamFlow Chat</h2>
+        <p className="text-slate-500 dark:text-slate-400 max-w-md text-center leading-relaxed">
+          Select a project group chat or a team member from the sidebar to start messaging and collaborating seamlessly.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className={`flex-1 flex h-full overflow-hidden ${isDarkMode ? 'dark bg-slate-900' : 'bg-slate-100'}`}>
@@ -568,7 +848,7 @@ export default function ChatWindow() {
           ref={messagesContainerRef}
           onScroll={handleScroll}
           className={`flex-grow overflow-y-auto p-6 space-y-4 ${wallpaper} relative`}
-          style={{ backgroundImage: `url('/chat-bg-pattern.png')`, backgroundBlendMode: 'overlay' }}
+
         >
 
           {filteredMessages.map((msg) => {
@@ -581,7 +861,7 @@ export default function ChatWindow() {
                 className={`flex w-full ${isSelf ? 'justify-end' : 'justify-start'} group mb-1 transition-colors duration-500`}
               >
                 {/* Message Bubble Container */}
-                <div className="relative max-w-[70%]">
+                <div className={`relative max-w-[70%] ${openMenuId === msg.id ? 'z-50' : 'z-0'}`}>
                   
                   {/* Reaction Hover Palette */}
                   <div className="absolute -top-[30px] right-0 hidden group-hover:flex items-center gap-1 bg-white dark:bg-slate-800 shadow-md border border-slate-200 rounded-full px-2 py-1 z-50">
@@ -644,7 +924,7 @@ export default function ChatWindow() {
                               <video src={msg.media_url} controls className="max-h-60 w-full rounded" />
                             )}
                             {msg.message_type === 'voice' && (
-                              <audio src={msg.media_url} controls className="w-full max-w-xs" />
+                              <VoicePlayer src={msg.media_url} durationText={`(${msg.content.match(/\d+/)?.[0] || 0}s)`} />
                             )}
                             {msg.message_type === 'document' && (
                               <a href={msg.media_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 p-2.5 text-emerald-700 dark:text-emerald-400 font-semibold text-xs hover:bg-slate-100 dark:hover:bg-slate-700">
@@ -695,7 +975,7 @@ export default function ChatWindow() {
                     </div>
 
                     {/* Dropdown Menu Trigger */}
-                    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                    <div className={`absolute top-2 right-2 transition-opacity z-10 ${openMenuId === msg.id ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
                       <button 
                         onClick={() => setOpenMenuId(openMenuId === msg.id ? null : msg.id)}
                         className="text-slate-400 hover:text-slate-600 bg-white/50 hover:bg-white rounded p-0.5"
@@ -706,7 +986,7 @@ export default function ChatWindow() {
 
                     {/* Custom Dropdown Menu */}
                     {openMenuId === msg.id && (
-                      <div className="absolute top-8 right-2 bg-slate-100 dark:bg-slate-700 shadow-xl rounded-lg py-1 w-32 border border-slate-200 dark:border-slate-600 z-50 overflow-hidden flex flex-col font-medium text-sm">
+                      <div className="absolute top-8 right-2 bg-slate-100 dark:bg-slate-700 shadow-xl rounded-lg py-1 w-32 border border-slate-200 dark:border-slate-600 z-[100] overflow-hidden flex flex-col font-medium text-sm">
                         <button className="px-4 py-2.5 text-left hover:bg-slate-200 dark:hover:bg-slate-600 border-b border-slate-200 dark:border-slate-600 transition-colors text-slate-700 dark:text-slate-200" onClick={() => { setReplyTarget(msg); setOpenMenuId(null); }}>Reply</button>
                         {isSelf && <button className="px-4 py-2.5 text-left hover:bg-slate-200 dark:hover:bg-slate-600 border-b border-slate-200 dark:border-slate-600 transition-colors text-slate-700 dark:text-slate-200" onClick={() => { setEditingMessage(msg.id); setOpenMenuId(null); }}>Edit</button>}
                         <button className="px-4 py-2.5 text-left hover:bg-slate-200 dark:hover:bg-slate-600 border-b border-slate-200 dark:border-slate-600 transition-colors text-slate-700 dark:text-slate-200" onClick={() => { handleInlineTranslate(msg, 'English'); }}>Translate (EN)</button>
@@ -752,7 +1032,7 @@ export default function ChatWindow() {
         {(isInputFocused || inputText.trim().length > 0) && (
           <div className="bg-white dark:bg-slate-800 px-4 py-2 border-t border-slate-200 dark:border-slate-700 flex items-center gap-2 overflow-x-auto no-scrollbar shrink-0">
             <Sparkles size={14} className="text-emerald-500 mr-1" />
-            {['professional', 'formal', 'shorten', 'expand', 'grammar_fix'].map((mode) => (
+            {['professional', 'shorten', 'expand', 'grammar_fix'].map((mode) => (
               <button
                 key={mode}
                 onClick={() => handleAIRewrite(mode)}
@@ -769,43 +1049,54 @@ export default function ChatWindow() {
             
             <div className="h-4 w-px bg-slate-300 dark:bg-slate-600 mx-1"></div>
             
-            <div className="relative flex items-center group">
-              <button
-                disabled={activeAIPill !== null || !inputText.trim()}
-                onClick={() => handleAITranslate(aiTargetLang)}
-                className={`px-3 py-1 text-[11px] font-medium rounded-full whitespace-nowrap transition-all flex items-center gap-1 ${
-                  activeAIPill === 'translation'
-                    ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400 opacity-70 cursor-not-allowed animate-pulse'
-                    : 'bg-slate-100 text-slate-600 hover:bg-indigo-50 hover:text-indigo-600 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed'
-                }`}
-              >
-                <Languages size={12} />
-                {activeAIPill === 'translation' ? 'Translating...' : `Translation (${aiTargetLang === 'Hindi' ? 'EN → HI' : 'HI → EN'})`}
-              </button>
-              
-              {/* Simple dropdown overlay on hover */}
-              {inputText.trim() && activeAIPill === null && (
-                <div className="absolute bottom-full mb-1 left-0 hidden group-hover:flex flex-col bg-white dark:bg-slate-800 shadow-lg border border-slate-200 dark:border-slate-700 rounded overflow-hidden z-10 w-28 text-[11px]">
-                  <button 
-                    className="px-3 py-2 text-left hover:bg-slate-50 dark:hover:bg-slate-700"
-                    onClick={() => { setAiTargetLang('English'); handleAITranslate('English'); }}
-                  >
-                    English
-                  </button>
-                  <button 
-                    className="px-3 py-2 text-left hover:bg-slate-50 dark:hover:bg-slate-700"
-                    onClick={() => { setAiTargetLang('Hindi'); handleAITranslate('Hindi'); }}
-                  >
-                    Hindi
-                  </button>
-                </div>
-              )}
-            </div>
+            {inputText.trim() && activeAIPill === null && (
+              <div className="flex gap-1 ml-2">
+                <button 
+                  className="px-3 py-1 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 dark:bg-indigo-900/30 dark:text-indigo-400 dark:hover:bg-indigo-900/50 rounded-full text-[11px] font-medium transition-colors"
+                  onClick={() => { setAiTargetLang('English'); handleAITranslate('English'); }}
+                >
+                  English
+                </button>
+                <button 
+                  className="px-3 py-1 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 dark:bg-indigo-900/30 dark:text-indigo-400 dark:hover:bg-indigo-900/50 rounded-full text-[11px] font-medium transition-colors"
+                  onClick={() => { setAiTargetLang('Hindi'); handleAITranslate('Hindi'); }}
+                >
+                  Hindi
+                </button>
+              </div>
+            )}
           </div>
         )}
 
         {/* Input Controls Panel */}
-        <div className="p-3 bg-[#f0f2f5] dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex items-center gap-3 shrink-0">
+        <div className="p-3 bg-[#f0f2f5] dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex items-center gap-3 shrink-0 relative">
+          
+          {/* Autocomplete Overlay */}
+          {showAutocomplete && autocompleteSuggestions.length > 0 && (
+            <div className="absolute bottom-full left-12 mb-2 w-64 bg-white dark:bg-slate-800 shadow-xl border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden z-50">
+              {autocompleteSuggestions.map((suggestion, idx) => {
+                const isUser = typeof suggestion !== 'string';
+                const key = isUser ? suggestion.id : suggestion;
+                const display = isUser ? suggestion.name : suggestion;
+                return (
+                  <div
+                    key={key}
+                    className={`px-4 py-2 cursor-pointer flex items-center gap-2 text-sm ${
+                      idx === autocompleteIndex ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'
+                    }`}
+                    onClick={() => handleAutocompleteSelect(suggestion)}
+                  >
+                    {isUser && (
+                      <img src={suggestion.avatar_url || generateAvatar(suggestion.name)} alt="" className="w-6 h-6 rounded-full" />
+                    )}
+                    <span>{display}</span>
+                    {isUser && <span className="text-[10px] text-slate-400 ml-auto">{suggestion.role}</span>}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
           <button title="Smile Emojis">
             <Smile className="text-slate-600 dark:text-slate-300 hover:text-emerald-600 transition-colors" size={22} />
           </button>
@@ -820,31 +1111,65 @@ export default function ChatWindow() {
             className="hidden"
           />
 
-          <form onSubmit={handleSendMessage} className="flex-grow flex items-center gap-2">
-            <input
-              type="text"
-              value={inputText}
-              onChange={(e) => setInputText(e.target.value)}
-              onFocus={() => setIsInputFocused(true)}
-              onBlur={() => setTimeout(() => setIsInputFocused(false), 200)}
-              placeholder="Type a message..."
-              className="w-full bg-white dark:bg-slate-700 text-slate-800 dark:text-white rounded-lg px-4 py-2 text-sm focus:outline-none border-none shadow-sm"
-            />
-            {inputText.trim() ? (
-              <button 
-                type="submit" 
-                className="p-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-full transition-all"
-              >
-                <Send size={18} />
-              </button>
+          <form onSubmit={handleSendMessage} className="flex-grow flex items-center gap-2 relative">
+            {isRecording ? (
+              <div className="w-full flex items-center justify-between bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-full px-4 py-1.5 border border-red-200 dark:border-red-800 animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center gap-3">
+                  <div className="relative flex items-center justify-center">
+                    <div className="absolute w-8 h-8 bg-red-500 rounded-full animate-ping opacity-20"></div>
+                    <Mic size={18} className="animate-pulse relative z-10 text-red-500" />
+                  </div>
+                  <span className="font-mono font-medium tracking-wider text-sm">
+                    {Math.floor(recordingTime / 60)}:{(recordingTime % 60).toString().padStart(2, '0')}
+                  </span>
+                  
+                  {/* Fake subtle waveform to look cool */}
+                  <div className="flex items-center gap-1 ml-4 opacity-70">
+                    {[1, 2, 3, 4, 5].map((i) => (
+                      <div key={i} className={`w-1 bg-red-500 rounded-full animate-bounce`} style={{ height: `${Math.random() * 12 + 4}px`, animationDelay: `${i * 0.1}s` }} />
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-1">
+                  <button type="button" onClick={cancelRecording} className="p-2 hover:bg-red-100 dark:hover:bg-red-900/50 rounded-full transition-colors text-red-600" title="Cancel">
+                    <Trash2 size={18} />
+                  </button>
+                  <button type="button" onClick={stopRecording} className="p-2 bg-red-500 hover:bg-red-600 text-white rounded-full transition-transform hover:scale-105 active:scale-95 ml-1" title="Send">
+                    <Send size={16} className="ml-0.5" />
+                  </button>
+                </div>
+              </div>
             ) : (
-              <button 
-                type="button"
-                onClick={isRecording ? stopRecording : startRecording}
-                className={`p-2 rounded-full transition-all ${isRecording ? 'bg-red-500 text-white animate-pulse' : 'bg-emerald-600 text-white'}`}
-              >
-                <Mic size={18} />
-              </button>
+              <>
+                <input
+                  ref={textInputRef}
+                  type="text"
+                  value={inputText}
+                  onChange={handleInputChange}
+                  onKeyDown={handleKeyDown}
+                  onFocus={() => setIsInputFocused(true)}
+                  onBlur={() => setTimeout(() => setIsInputFocused(false), 200)}
+                  placeholder="Type a message..."
+                  className="w-full bg-white dark:bg-slate-700 text-slate-800 dark:text-white rounded-full px-5 py-2.5 text-sm focus:outline-none border border-slate-200 dark:border-slate-600 focus:border-emerald-500 shadow-sm transition-all"
+                />
+                {inputText.trim() ? (
+                  <button 
+                    type="submit" 
+                    className="p-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-full transition-all shadow-sm shrink-0"
+                  >
+                    <Send size={18} className="ml-0.5" />
+                  </button>
+                ) : (
+                  <button 
+                    type="button"
+                    onClick={startRecording}
+                    className="p-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 rounded-full transition-all shrink-0"
+                  >
+                    <Mic size={18} />
+                  </button>
+                )}
+              </>
             )}
           </form>
         </div>
@@ -901,7 +1226,25 @@ export default function ChatWindow() {
                       )}
                       {isDoc && (
                         <div className="w-full h-full bg-slate-50 dark:bg-slate-600 flex flex-col items-center justify-center p-2 text-emerald-600 dark:text-emerald-400">
-                          {mediaMsg.message_type === 'voice' ? <Mic size={24} /> : <FileText size={24} />}
+                          <div className="mt-2 text-slate-800 dark:text-slate-200 whitespace-pre-wrap flex items-center gap-2">
+                            {mediaMsg.message_type === 'voice' ? (
+                              isUploadingVoice && mediaMsg.id.startsWith('temp') ? (
+                                <div className="flex items-center gap-3 bg-slate-100 dark:bg-slate-700/50 rounded-full p-2 pr-4 min-w-[200px]">
+                                  <div className="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-600 flex items-center justify-center">
+                                    <Loader2 size={18} className="animate-spin text-slate-500" />
+                                  </div>
+                                  <div className="flex-1 text-sm text-slate-500 font-medium">Sending...</div>
+                                </div>
+                              ) : (
+                                <VoicePlayer src={mediaMsg.file_url} durationText={`(${mediaMsg.content.match(/\d+/)?.[0] || 0}s)`} />
+                              )
+                            ) : (
+                              <div className="flex items-center gap-2">
+                                <FileText size={24} />
+                                <span>{mediaMsg.content || 'File attached'}</span>
+                              </div>
+                            )}
+                          </div>
                           <span className="text-[10px] mt-1 text-slate-500 dark:text-slate-300 truncate w-full text-center">
                             {mediaMsg.message_type === 'voice' ? 'Voice Note' : 'Document'}
                           </span>

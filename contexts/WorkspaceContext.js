@@ -74,14 +74,8 @@ export function WorkspaceProvider({ children }) {
       }
       const cachedChan = localStorage.getItem('tf_active_channel');
       if (cachedChan) {
-        try {
-          const parsed = JSON.parse(cachedChan);
-          if (parsed && !parsed.id?.toString().startsWith('mock-')) {
-            setActiveChannel(parsed);
-          } else {
-            localStorage.removeItem('tf_active_channel');
-          }
-        } catch (e) {}
+        // We no longer persist activeChannel on load to ensure empty state by default
+        localStorage.removeItem('tf_active_channel');
       }
     }
   }, []);
@@ -225,7 +219,7 @@ export function WorkspaceProvider({ children }) {
         const list = resData.employees || resData.results || resData.data;
         const mappedEmployees = list
           .map(emp => {
-            const rawAvatar = emp.profilePicture || emp.profilePic || emp.profileImage || emp.image || emp.avatar || null;
+            const rawAvatar = emp.profile_picture || emp.profile_pic || emp.profilePicture || emp.profilePic || emp.profileImage || emp.image || emp.avatar || null;
             const avatarUrl = rawAvatar ? (rawAvatar.startsWith('http') ? rawAvatar : `https://api.dyzo.ai${rawAvatar.startsWith('/') ? '' : '/'}${rawAvatar}`) : null;
             
             return {
@@ -431,6 +425,19 @@ export function WorkspaceProvider({ children }) {
         .eq('team_id', teamUuid);
       if (chanError) throw chanError;
       
+      const syncGroupMembers = async (convId) => {
+        if (!activeProject || !activeProject.employees) return;
+        try {
+          const memberships = activeProject.employees.map(empId => ({
+            conversation_id: toUUID(convId),
+            user_id: toUUID(empId)
+          }));
+          await supabase.from('conversation_members').upsert(memberships);
+        } catch (e) {
+          console.warn("Could not sync group chat members:", e);
+        }
+      };
+
       if (!chanData || chanData.length === 0) {
         // Auto-create general channel for this team if not already present in Supabase
         const { data: newChan, error: chanErr } = await supabase
@@ -444,42 +451,38 @@ export function WorkspaceProvider({ children }) {
           .single();
         if (chanErr) throw chanErr;
         // Sync to conversations table for WhatsApp compatibility
-        for (const c of chanData) {
-          try {
-            await supabase.from('conversations').upsert({
-              id: toUUID(c.id),
-              name: c.name,
-              conversation_type: 'group'
-            });
-          } catch (e) {}
-        }
-
         chanData = [newChan];
-      } else {
-        // Sync existing to conversations table
-        for (const c of chanData) {
-          try {
-            await supabase.from('conversations').upsert({
-              id: toUUID(c.id),
-              name: c.name,
-              conversation_type: 'group'
-            });
-          } catch (e) {}
-        }
+      }
+      
+      // Sync all channels to conversations table and sync members for groups
+      for (const c of chanData) {
+        try {
+          await supabase.from('conversations').upsert({
+            id: toUUID(c.id),
+            name: c.name,
+            conversation_type: 'group'
+          });
+          await syncGroupMembers(c.id);
+        } catch (e) {}
       }
 
       const isDM = activeChannel?.is_private || activeChannel?.name?.startsWith('dm_') || activeChannel?.name?.startsWith('dm-');
-      const filteredChanData = chanData.filter(c => c.name !== 'general');
-      if (isDM && activeChannel && !filteredChanData.some(c => c.id === activeChannel.id)) {
-        setChannels([...filteredChanData, activeChannel]);
+      
+      // Sort so 'general' is always the first channel for Project Group Chat
+      const sortedChanData = [...chanData].sort((a, b) => {
+        if (a.name === 'general') return -1;
+        if (b.name === 'general') return 1;
+        return 0;
+      });
+
+      if (isDM && activeChannel && !sortedChanData.some(c => c.id === activeChannel.id)) {
+        setChannels([...sortedChanData, activeChannel]);
       } else {
-        setChannels(filteredChanData);
+        setChannels(sortedChanData);
       }
-      const hasActiveInTeam = filteredChanData.some(c => c.id === activeChannel?.id);
-      if (!activeChannel || (!isDM && !hasActiveInTeam) || activeChannel?.name === 'general') {
-        if (user?.id) {
-          getOrCreateDMChannel(user.id);
-        }
+      const hasActiveInTeam = sortedChanData.some(c => c.id === activeChannel?.id);
+      if (!activeChannel || (!isDM && !hasActiveInTeam)) {
+        setActiveChannel(null);
       }
 
       const { data: taskData, error: taskError } = await supabase
@@ -723,17 +726,12 @@ export function WorkspaceProvider({ children }) {
     };
   };
 
+  // Persist active project
   useEffect(() => {
-    if (activeProject) {
+    if (activeProject && !activeProject.id?.toString().startsWith('mock-')) {
       localStorage.setItem('tf_active_project', JSON.stringify(activeProject));
     }
   }, [activeProject]);
-
-  useEffect(() => {
-    if (activeChannel) {
-      localStorage.setItem('tf_active_channel', JSON.stringify(activeChannel));
-    }
-  }, [activeChannel]);
 
   const createWorkspace = async (name, slug) => {
     const userUuid = toUUID(user.id);
@@ -767,6 +765,50 @@ export function WorkspaceProvider({ children }) {
     if (error) throw error;
     setProjects(prev => [...prev, data]);
     setActiveProject(data);
+    return data;
+  };
+
+  const createTask = async (taskData) => {
+    if (!activeWorkspace) throw new Error("No active workspace");
+    // Ensure we have a team. If none, use the first team or error.
+    let targetTeamId = activeTeam?.id || teams[0]?.id;
+    if (!targetTeamId) {
+       throw new Error("No team available to assign the task to.");
+    }
+    
+    const getValidId = (userObj) => {
+      if (!userObj) return '';
+      if (userObj.dyzoId) return userObj.dyzoId;
+      if (userObj.id && !isNaN(userObj.id)) return userObj.id;
+      return '';
+    };
+
+    const validProjectId = (activeProject?.id && !isNaN(activeProject.id)) ? activeProject.id : undefined;
+
+    const newTask = {
+      taskName: taskData.title,
+      description: taskData.description || '',
+      projectId: validProjectId,
+      assigned_users: taskData.assigned_users || [],
+      collaborators: taskData.collaborators || [],
+      assignby_id: getValidId(user)
+    };
+    
+    const response = await fetch('/api/tasks', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newTask)
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Failed to create task');
+    }
+    
+    const data = await response.json();
+    
+    // We don't necessarily need to update the state immediately here because realtime subscriptions will catch it,
+    // but doing so optimistically is fine if we return data.
     return data;
   };
 
@@ -913,6 +955,7 @@ export function WorkspaceProvider({ children }) {
         setTypingUsers,
         archivedConversations,
         setArchivedConversations,
+        createTask,
       }}
     >
       {children}

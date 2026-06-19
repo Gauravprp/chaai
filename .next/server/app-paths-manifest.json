@@ -1,4 +1,7 @@
 {
-  "/api/ai/rewrite/route": "app/api/ai/rewrite/route.js",
-  "/workspace/page": "app/workspace/page.js"
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/employees/route": "app/api/employees/route.js",
+  "/api/projects/route": "app/api/projects/route.js",
+  "/workspace/page": "app/workspace/page.js",
+  "/page": "app/page.js"
 }

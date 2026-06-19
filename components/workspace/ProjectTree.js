@@ -49,25 +49,38 @@ export default function ProjectTree({ onSelectView }) {
     return (a.name || '').localeCompare(b.name || '');
   });
 
+  // Safely find the project group chat
+  const groupChannel = channels.find(c => c.name === 'general' || !c.name?.startsWith('dm'));
+
   return (
     <div className="flex-1 flex flex-col min-h-0 overflow-y-auto py-4 px-2 space-y-4">
       {/* 0. Group Chat Section */}
-      {channels.length > 0 && (
+      {groupChannel && (
         <div className="space-y-1">
           <button
             onClick={() => {
-              setActiveChannel(channels[0]);
+              setActiveChannel(groupChannel);
               onSelectView('chat');
             }}
-            className={`w-full flex items-center gap-2.5 p-2 rounded-lg text-left text-sm ${
-              activeChannel?.id === channels[0]?.id ? 'bg-indigo-50/60 text-indigo-600 font-semibold' : 'text-slate-700 hover:bg-slate-100'
+            className={`w-full flex items-center gap-2.5 p-2.5 rounded-lg text-left text-sm ${
+              activeChannel?.id === groupChannel.id ? 'bg-indigo-50/60 text-indigo-600 font-semibold' : 'text-slate-700 hover:bg-slate-100'
             } smooth-transition`}
           >
-            <div className="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center shrink-0">
-              <Folder size={16} />
+            <div className="relative shrink-0">
+              <img
+                src={activeProject?.avatar_url || generateAvatar(activeProject?.name || 'Project')}
+                alt={activeProject?.name || 'Project Group Chat'}
+                className="w-8 h-8 rounded-lg object-cover border border-slate-200"
+              />
+              <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border-2 border-white bg-emerald-500"></span>
             </div>
-            <div className="flex-1 truncate">
-              <div className="font-medium">Project Group Chat</div>
+            <div className="truncate flex-1">
+              <div className="flex items-center justify-between">
+                <span className="truncate font-medium">{activeProject?.name || 'Project'} Group Chat</span>
+              </div>
+              <div className="text-[10px] text-slate-400 truncate flex items-center gap-1">
+                <span>All Project Members</span>
+              </div>
             </div>
           </button>
         </div>
