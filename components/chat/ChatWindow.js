@@ -52,7 +52,7 @@ export default function ChatWindow() {
   const [scheduleTime, setScheduleTime] = useState('');
   const [showScrollBottom, setShowScrollBottom] = useState(false);
   const [openMenuId, setOpenMenuId] = useState(null);
-  const [pendingAttachment, setPendingAttachment] = useState(null);
+  const [pendingAttachments, setPendingAttachments] = useState([]);
   const [initialScrollDone, setInitialScrollDone] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
 
@@ -94,7 +94,7 @@ export default function ChatWindow() {
         const draft = localStorage.getItem(`draft_${activeChannel.id}`);
         setInputText(draft || '');
         setInitialScrollDone(false);
-        setPendingAttachment(null);
+        setPendingAttachments([]);
       } else {
         setInputText('');
       }
@@ -383,98 +383,130 @@ export default function ChatWindow() {
   // Message Send Handler
   const handleSendMessage = async (e) => {
     if (e) e.preventDefault();
-    if (!inputText.trim() && !pendingAttachment) return;
+    if (!inputText.trim() && pendingAttachments.length === 0) return;
 
     if (editingMessage) {
       await handleEditMessage(editingMessage, inputText);
       setInputText('');
-      setPendingAttachment(null);
+      setPendingAttachments([]);
       return;
     }
 
-    let messageContent = inputText;
-    const attachmentToSend = pendingAttachment;
+    const textContent = inputText;
+    const attachmentsToSend = [...pendingAttachments];
 
     setInputText('');
-    setPendingAttachment(null);
+    setPendingAttachments([]);
     setReplyTarget(null);
     setShowAutocomplete(false);
 
-    // Parse for Tasks
-    const taskParse = parseTaskCommand(messageContent, members);
-    if (taskParse && taskParse.error) {
-      toast.error(`❌ ${taskParse.error}`);
-      return;
-    }
-
-    // Check if the message is only a task, or task + other text
-    // The parser returns isTask if it contains @task anywhere
-    if (taskParse && taskParse.isTask) {
-      let assignedUserIds = [];
-      let collaboratorIds = [];
-
-      const isDM = activeChannel?.name?.startsWith('dm_') || activeChannel?.name?.startsWith('dm-');
-      const partner = isDM ? getDMPartner() : null;
-
-      // Helper to extract valid Dyzo ID (ignoring Supabase UUIDs)
-      const getValidId = (userObj) => {
-        if (!userObj) return null;
-        if (userObj.dyzoId) return userObj.dyzoId;
-        if (userObj.id && !isNaN(userObj.id)) return userObj.id;
-        return null;
-      };
-
-      // 1. Assignees logic
-      if (taskParse.assignees.length === 0) {
-        const pid = getValidId(partner);
-        if (pid) assignedUserIds = [pid];
-      } else {
-        assignedUserIds = taskParse.assignees.map(getValidId).filter(Boolean);
+    // If there is text, send it first
+    if (textContent.trim()) {
+      let messageContent = textContent;
+      const taskParse = parseTaskCommand(messageContent, members);
+      if (taskParse && taskParse.error) {
+        toast.error(`❌ ${taskParse.error}`);
+        return;
       }
 
-      // 2. Collaborators logic
-      if (taskParse.collaborators.length === 0) {
-        const myId = getValidId(profile);
-        if (myId) collaboratorIds.push(myId);
+      if (taskParse && taskParse.isTask) {
+        let assignedUserIds = [];
+        let collaboratorIds = [];
 
-        const pid = getValidId(partner);
-        if (pid) collaboratorIds.push(pid);
-      } else {
-        collaboratorIds = taskParse.collaborators.map(getValidId).filter(Boolean);
-      }
+        const isDM = activeChannel?.name?.startsWith('dm_') || activeChannel?.name?.startsWith('dm-');
+        const partner = isDM ? getDMPartner() : null;
 
-      // Ensure the creator and ALL assignees are always in collaborators
-      const creatorId = getValidId(profile);
-      const finalCollaborators = new Set([...collaboratorIds, ...assignedUserIds]);
-      if (creatorId) finalCollaborators.add(creatorId);
+        const getValidId = (userObj) => {
+          if (!userObj) return null;
+          if (userObj.dyzoId) return userObj.dyzoId;
+          if (userObj.id && !isNaN(userObj.id)) return userObj.id;
+          return null;
+        };
 
-      collaboratorIds = Array.from(finalCollaborators);
-
-      try {
-        const taskResponse = await createTask({
-          title: taskParse.title,
-          description: taskParse.description,
-          assigned_users: assignedUserIds,
-          collaborators: collaboratorIds,
-        });
-
-        const dyzoTaskId = taskResponse?.task?._id || taskResponse?.task?.id || taskResponse?.data?._id || taskResponse?.data?.id || taskResponse?.id;
-        if (dyzoTaskId) {
-          messageContent += `\n\nTask Link: https://dyzo.ai/task/${dyzoTaskId}`;
+        if (taskParse.assignees.length === 0) {
+          const pid = getValidId(partner);
+          if (pid) assignedUserIds = [pid];
+        } else {
+          assignedUserIds = taskParse.assignees.map(getValidId).filter(Boolean);
         }
 
-        toast.success(`✅ Task created successfully`);
+        if (taskParse.collaborators.length === 0) {
+          const myId = getValidId(profile);
+          if (myId) collaboratorIds.push(myId);
+
+          const pid = getValidId(partner);
+          if (pid) collaboratorIds.push(pid);
+        } else {
+          collaboratorIds = taskParse.collaborators.map(getValidId).filter(Boolean);
+        }
+
+        const creatorId = getValidId(profile);
+        const finalCollaborators = new Set([...collaboratorIds, ...assignedUserIds]);
+        if (creatorId) finalCollaborators.add(creatorId);
+
+        collaboratorIds = Array.from(finalCollaborators);
+
+        try {
+          const taskResponse = await createTask({
+            title: taskParse.title,
+            description: taskParse.description,
+            assigned_users: assignedUserIds,
+            collaborators: collaboratorIds,
+          });
+
+          const dyzoTaskId = taskResponse?.task?._id || taskResponse?.task?.id || taskResponse?.data?._id || taskResponse?.data?.id || taskResponse?.id;
+          if (dyzoTaskId) {
+            messageContent += `\n\nTask Link: https://dyzo.ai/task/${dyzoTaskId}`;
+          }
+
+          toast.success(`✅ Task created successfully`);
+        } catch (err) {
+          toast.error('❌ Failed to create task: ' + err.message);
+          return;
+        }
+      }
+
+      const tempId = `temp-${Date.now()}`;
+      const optimisticMessage = {
+        id: tempId,
+        conversation_id: toUUID(activeChannel?.id),
+        sender_id: toUUID(profile?.id),
+        user_id: toUUID(profile?.id),
+        content: messageContent,
+        message_type: 'text',
+        created_at: new Date().toISOString(),
+        profiles: profile,
+        reply_to_message_id: replyTarget ? replyTarget.id : null,
+      };
+
+      setMessages(prev => [...prev, optimisticMessage]);
+      setTimeout(() => scrollToBottom(), 100);
+
+      try {
+        const { data, error } = await supabase
+          .from('messages')
+          .insert({
+            conversation_id: toUUID(activeChannel?.id),
+            sender_id: toUUID(profile?.id),
+            content: messageContent,
+            message_type: 'text',
+            reply_to_message_id: replyTarget ? toUUID(replyTarget.id) : null,
+          })
+          .select()
+          .single();
+        if (error) throw error;
+
+        setMessages(prev =>
+          prev.map(msg => (msg.id === tempId ? { ...msg, ...data, user_id: data.sender_id } : msg))
+        );
       } catch (err) {
-        toast.error('❌ Failed to create task: ' + err.message);
-        return; // Halt sending if task creation fails and user intended it as a task
+        console.error("Message sync error:", err.message || err.details || err);
       }
     }
 
-    let msgType = 'text';
-    let fileUrl = null;
-
-    if (attachmentToSend) {
-      msgType = 'document';
+    // Send each file one by one
+    for (const attachmentToSend of attachmentsToSend) {
+      let msgType = 'document';
       if (attachmentToSend.type.startsWith('image/')) msgType = 'image';
       else if (attachmentToSend.type.startsWith('video/')) msgType = 'video';
       else if (attachmentToSend.type.startsWith('audio/')) msgType = 'voice';
@@ -494,6 +526,7 @@ export default function ChatWindow() {
         created_at: new Date().toISOString(),
         profiles: profile,
       }]);
+      setTimeout(() => scrollToBottom(), 100);
 
       try {
         const { error: uploadError } = await supabase.storage
@@ -504,52 +537,48 @@ export default function ChatWindow() {
         const { data: { publicUrl } } = supabase.storage
           .from('chat-attachments')
           .getPublicUrl(fileName);
-        fileUrl = publicUrl;
+        const fileUrl = publicUrl;
+
         setMessages(prev => prev.filter(msg => msg.id !== uploadingTempId));
-      } catch (err) {
-        toast.error("Failed to upload attachment");
-        setMessages(prev => prev.filter(msg => msg.id !== uploadingTempId));
-        return; // Halt sending if upload fails
-      }
-    }
 
-    const tempId = `temp-${Date.now()}`;
-    const optimisticMessage = {
-      id: tempId,
-      conversation_id: toUUID(activeChannel?.id),
-      sender_id: toUUID(profile?.id),
-      user_id: toUUID(profile?.id),
-      content: messageContent || `Sent a ${msgType}`,
-      message_type: msgType,
-      media_url: fileUrl,
-      created_at: new Date().toISOString(),
-      profiles: profile,
-      reply_to_message_id: replyTarget ? replyTarget.id : null,
-    };
-
-    setMessages(prev => [...prev, optimisticMessage]);
-    setTimeout(() => scrollToBottom(), 100);
-
-    try {
-      const { data, error } = await supabase
-        .from('messages')
-        .insert({
+        const tempId = `temp-${Date.now()}`;
+        const optimisticMessage = {
+          id: tempId,
           conversation_id: toUUID(activeChannel?.id),
           sender_id: toUUID(profile?.id),
-          content: messageContent || `Sent a ${msgType}`,
+          user_id: toUUID(profile?.id),
+          content: `Sent a ${msgType}`,
           message_type: msgType,
           media_url: fileUrl,
-          reply_to_message_id: replyTarget ? toUUID(replyTarget.id) : null,
-        })
-        .select()
-        .single();
-      if (error) throw error;
+          created_at: new Date().toISOString(),
+          profiles: profile,
+          reply_to_message_id: null,
+        };
 
-      setMessages(prev =>
-        prev.map(msg => (msg.id === tempId ? { ...msg, ...data, user_id: data.sender_id } : msg))
-      );
-    } catch (err) {
-      console.error("Message sync error:", err.message || err.details || err);
+        setMessages(prev => [...prev, optimisticMessage]);
+        setTimeout(() => scrollToBottom(), 100);
+
+        const { data, error } = await supabase
+          .from('messages')
+          .insert({
+            conversation_id: toUUID(activeChannel?.id),
+            sender_id: toUUID(profile?.id),
+            content: `Sent a ${msgType}`,
+            message_type: msgType,
+            media_url: fileUrl,
+            reply_to_message_id: null,
+          })
+          .select()
+          .single();
+        if (error) throw error;
+
+        setMessages(prev =>
+          prev.map(msg => (msg.id === tempId ? { ...msg, ...data, user_id: data.sender_id } : msg))
+        );
+      } catch (err) {
+        toast.error(`Failed to upload ${attachmentToSend.name}`);
+        setMessages(prev => prev.filter(msg => msg.id !== uploadingTempId));
+      }
     }
   };
 
@@ -639,22 +668,25 @@ export default function ChatWindow() {
   const handlePaste = (e) => {
     const items = e.clipboardData?.items;
     if (!items) return;
+    const newFiles = [];
     for (let i = 0; i < items.length; i++) {
       if (items[i].type.indexOf('image') !== -1) {
         const file = items[i].getAsFile();
         if (file) {
-          const fakeFile = new File([file], file.name || 'pasted-image.png', { type: file.type });
-          setPendingAttachment(fakeFile);
+          const fakeFile = new File([file], file.name || `pasted-image-${Date.now()}-${i}.png`, { type: file.type });
+          newFiles.push(fakeFile);
         }
-        break;
       }
+    }
+    if (newFiles.length > 0) {
+      setPendingAttachments(prev => [...prev, ...newFiles]);
     }
   };
 
   const handleFileUpload = (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setPendingAttachment(file);
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+    setPendingAttachments(prev => [...prev, ...files]);
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
@@ -1294,19 +1326,27 @@ export default function ChatWindow() {
             </div>
           )}
 
-          {pendingAttachment && (
-            <div className="relative self-start mt-2 ml-2 mb-1">
-              {pendingAttachment.type.startsWith('image/') ? (
-                <img src={URL.createObjectURL(pendingAttachment)} alt="Preview" className="h-20 w-auto rounded border" />
-              ) : (
-                <div className="flex items-center gap-2 p-3 bg-slate-100 rounded border">
-                  <FileText size={24} className="text-emerald-600" />
-                  <span className="text-sm font-medium">{pendingAttachment.name}</span>
+          {pendingAttachments.length > 0 && (
+            <div className="flex flex-wrap gap-3 mt-2 ml-2 mb-1 max-h-36 overflow-y-auto no-scrollbar">
+              {pendingAttachments.map((attachment, index) => (
+                <div key={index} className="relative self-start shrink-0 pt-1.5 pr-1.5">
+                  {attachment.type.startsWith('image/') ? (
+                    <img src={URL.createObjectURL(attachment)} alt="Preview" className="h-16 w-auto rounded border object-contain bg-slate-50 dark:bg-slate-700" />
+                  ) : (
+                    <div className="flex items-center gap-2 p-2 bg-slate-100 dark:bg-slate-750 rounded border text-xs max-w-[150px]">
+                      <FileText size={18} className="text-emerald-600 dark:text-emerald-400 shrink-0" />
+                      <span className="truncate font-medium text-slate-700 dark:text-slate-200">{attachment.name}</span>
+                    </div>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => setPendingAttachments(prev => prev.filter((_, i) => i !== index))}
+                    className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-0.5 shadow hover:bg-red-600 transition-colors z-10"
+                  >
+                    <X size={10} />
+                  </button>
                 </div>
-              )}
-              <button type="button" onClick={() => setPendingAttachment(null)} className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow hover:bg-red-600 transition-colors">
-                <X size={12} />
-              </button>
+              ))}
             </div>
           )}
 
@@ -1347,6 +1387,7 @@ export default function ChatWindow() {
               ref={fileInputRef}
               onChange={handleFileUpload}
               className="hidden"
+              multiple
             />
 
             <form onSubmit={handleSendMessage} className="flex-grow flex items-center gap-2 relative">
@@ -1392,7 +1433,7 @@ export default function ChatWindow() {
                     placeholder="Type a message..."
                     className="w-full bg-transparent text-slate-800 dark:text-white px-2 py-2 text-[15px] focus:outline-none placeholder:text-slate-400"
                   />
-                  {inputText.trim() ? (
+                  {inputText.trim() || pendingAttachments.length > 0 ? (
                     <button
                       type="submit"
                       onMouseDown={(e) => e.preventDefault()}
