@@ -3,13 +3,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { useAuth } from '@/contexts/AuthContext';
+import { useCall } from '@/contexts/CallContext';
 import { supabase } from '@/lib/supabase';
 import {
   Send, Smile, MessageSquare, Sparkles, Languages, Check, ArrowRight,
   Info, AlertCircle, Copy, Trash2, Edit3, CornerUpLeft, Paperclip,
   Mic, Search, Pin, Star, Archive, ShieldAlert, FileText, Image as ImageIcon,
   Video as VideoIcon, CheckCheck, MoreVertical, X, Calendar, UserCheck,
-  Square, Loader2, ChevronLeft
+  Square, Loader2, ChevronLeft, Phone
 } from 'lucide-react';
 import { generateAvatar } from '@/utils/avatar';
 import { toast } from "toastflux";
@@ -43,6 +44,7 @@ export default function ChatWindow() {
   const [showMediaTab, setShowMediaTab] = useState(false);
   const [mediaTabType, setMediaTabType] = useState('media'); // 'media' | 'docs'
   const [showHeaderMenu, setShowHeaderMenu] = useState(false);
+  const { startCall } = useCall();
   const [showEditGroupModal, setShowEditGroupModal] = useState(false);
 
   const [pinnedMessage, setPinnedMessage] = useState(null);
@@ -52,6 +54,7 @@ export default function ChatWindow() {
   const [openMenuId, setOpenMenuId] = useState(null);
   const [pendingAttachment, setPendingAttachment] = useState(null);
   const [initialScrollDone, setInitialScrollDone] = useState(false);
+  const [previewImage, setPreviewImage] = useState(null);
 
   // Autocomplete State
   const [showAutocomplete, setShowAutocomplete] = useState(false);
@@ -712,6 +715,26 @@ export default function ChatWindow() {
     }
   };
 
+  const handleDownloadImage = async (url, customFilename) => {
+    try {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = customFilename || `downloaded-image-${Date.now()}.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(blobUrl);
+      toast.success("Downloading image...");
+    } catch (err) {
+      console.error("Error downloading file:", err);
+      window.open(url, '_blank');
+    }
+  };
+
+
   // Pin Message
   const handlePinMessage = async (msgId) => {
     try {
@@ -874,6 +897,16 @@ export default function ChatWindow() {
           </div>
 
           <div className="flex items-center gap-4 text-slate-600 dark:text-slate-300">
+            {!isGroup && activeChannel && (
+              <>
+                <button onClick={() => startCall(activeChannel, 'audio')} title="Audio Call" className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
+                  <Phone size={20} className="hover:text-emerald-600 transition-colors" />
+                </button>
+                <button onClick={() => startCall(activeChannel, 'video')} title="Video Call" className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
+                  <VideoIcon size={20} className="hover:text-emerald-600 transition-colors" />
+                </button>
+              </>
+            )}
             {isGroup && (
               <button onClick={() => setShowSearch(!showSearch)} title="Search Messages">
                 <Search size={20} className="hover:text-emerald-600 transition-colors" />
@@ -959,7 +992,7 @@ export default function ChatWindow() {
 
           {filteredMessages.map((msg, idx) => {
             const isSelf = msg.sender_id?.toLowerCase() === profile?.id?.toLowerCase() || msg.user_id?.toLowerCase() === profile?.id?.toLowerCase();
-            const isLastFew = idx >= filteredMessages.length - 3;
+            const isLastFew = idx >= filteredMessages.length - 3 && idx >= 3;
 
             return (
               <div
@@ -997,11 +1030,50 @@ export default function ChatWindow() {
                     )}
 
                     {/* Reply Context Render */}
-                    {msg.reply_to_message_id && (
-                      <div className="bg-slate-50/70 dark:bg-slate-800/50 border-l-4 border-emerald-500 p-2 rounded text-xs text-slate-600 dark:text-slate-300 mb-2 font-medium select-none">
-                        Replied to another message
-                      </div>
-                    )}
+                    {msg.reply_to_message_id && (() => {
+                      const repliedMsg = messages.find(m => m.id === msg.reply_to_message_id);
+                      if (!repliedMsg) {
+                        return (
+                          <div className={`border-l-4 border-emerald-500 p-2 rounded text-xs mb-2 font-medium select-none ${
+                            isSelf ? 'bg-white/10 text-white/90' : 'bg-slate-50/70 dark:bg-slate-800/50 text-slate-600 dark:text-slate-300'
+                          }`}>
+                            Replied to another message
+                          </div>
+                        );
+                      }
+                      const senderName = repliedMsg.profiles?.name || 'User';
+                      let previewText = repliedMsg.content;
+                      if (!previewText || (repliedMsg.media_url && previewText.startsWith('Uploading '))) {
+                        if (repliedMsg.message_type === 'image') previewText = '📸 Photo';
+                        else if (repliedMsg.message_type === 'video') previewText = '🎥 Video';
+                        else if (repliedMsg.message_type === 'voice') previewText = '🎤 Voice message';
+                        else if (repliedMsg.message_type === 'document') previewText = '📄 Document';
+                        else previewText = 'Attachment';
+                      }
+                      return (
+                        <div className={`border-l-4 border-emerald-500 p-2 rounded text-xs mb-2 select-none cursor-pointer hover:opacity-90 ${
+                          isSelf ? 'bg-white/10 text-white/95' : 'bg-slate-50/70 dark:bg-slate-800/50 text-slate-600 dark:text-slate-300'
+                        }`} onClick={(e) => {
+                          e.stopPropagation();
+                          const el = document.getElementById(`msg-${msg.reply_to_message_id}`);
+                          if (el) {
+                            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            el.classList.add('bg-emerald-500/20');
+                            setTimeout(() => el.classList.remove('bg-emerald-500/20'), 2000);
+                          }
+                        }}>
+                          <span className={`block font-bold mb-0.5 ${
+                            isSelf ? 'text-emerald-200' : 'text-emerald-600 dark:text-emerald-400'
+                          }`}>
+                            {senderName}
+                          </span>
+                          <span className="block truncate max-w-[250px]">
+                            {previewText}
+                          </span>
+                        </div>
+                      );
+                    })()}
+
 
                     {/* Content */}
                     <div>
@@ -1012,8 +1084,25 @@ export default function ChatWindow() {
                         </div>
                       ) : msg.media_url && (
                         <div className="mt-1 mb-2 max-w-full overflow-hidden rounded-lg border border-slate-100 dark:border-slate-650 bg-slate-50 dark:bg-slate-800">
-                          {msg.message_type === 'image' && (
-                            <img src={msg.media_url} alt="Attachment" className="max-h-60 w-auto object-contain rounded" />
+                           {msg.message_type === 'image' && (
+                            <div className="relative group/img max-h-60 overflow-hidden rounded flex items-center justify-center">
+                              <img
+                                src={msg.media_url}
+                                alt="Attachment"
+                                className="max-h-60 w-auto object-contain rounded cursor-pointer hover:opacity-95 transition-opacity"
+                                onClick={() => setPreviewImage(msg.media_url)}
+                              />
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDownloadImage(msg.media_url, `chat-image-${msg.id}.png`);
+                                }}
+                                className="absolute bottom-2 right-2 p-1.5 bg-black/60 hover:bg-black/80 text-white rounded-full opacity-0 group-hover/img:opacity-100 transition-opacity shadow-sm flex items-center justify-center"
+                                title="Download Image"
+                              >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                              </button>
+                            </div>
                           )}
                           {msg.message_type === 'video' && (
                             <video src={msg.media_url} controls className="max-h-60 w-full rounded" />
@@ -1131,8 +1220,13 @@ export default function ChatWindow() {
           </div>
         )}
 
-        {/* AI Tools Pills Panel */}
-        <div className={`absolute bottom-20 left-4 right-4 z-[140] flex items-center gap-2 overflow-x-auto no-scrollbar transition-all duration-300 ${isInputFocused || inputText.trim().length > 0 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 pointer-events-none'
+        {/* Bottom Input Area Container */}
+        <div className="absolute bottom-4 left-4 right-4 z-[150] flex flex-col gap-2 pointer-events-none">
+          {/* AI Tools Pills Panel */}
+          <div className={`w-full flex items-center gap-2 overflow-x-auto no-scrollbar transition-all duration-300 pointer-events-auto ${
+            isInputFocused || inputText.trim().length > 0
+              ? 'opacity-100 translate-y-0 max-h-12'
+              : 'opacity-0 translate-y-2 pointer-events-none max-h-0 overflow-hidden'
           }`}>
           <div className="bg-white/90 backdrop-blur-md dark:bg-slate-800/90 px-4 py-2 rounded-full border border-slate-200/50 dark:border-slate-700/50 shadow-sm flex items-center gap-2">
             <Sparkles size={16} className="text-primary-500 mr-1" />
@@ -1171,8 +1265,8 @@ export default function ChatWindow() {
           </div>
         </div>
 
-        {/* Input Controls Panel - Floating Glass Container */}
-        <div className="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-lg dark:bg-slate-800/90 border border-slate-200/50 dark:border-slate-700/50 shadow-[0_8px_30px_rgba(0,0,0,0.08)] rounded-[24px] p-2 flex flex-col gap-2 z-[150] transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.12)]">
+          {/* Input Controls Panel - Floating Glass Container */}
+          <div className="w-full bg-white/90 backdrop-blur-lg dark:bg-slate-800/90 border border-slate-200/50 dark:border-slate-700/50 shadow-[0_8px_30px_rgba(0,0,0,0.08)] rounded-[24px] p-2 flex flex-col gap-2 pointer-events-auto transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.12)]">
 
           {/* Edit Target Info */}
           {editingMessage && (
@@ -1322,6 +1416,7 @@ export default function ChatWindow() {
           </div>
         </div>
       </div>
+      </div>
 
       {/* Shared Media Tab Sidepanel */}
       {showMediaTab && (
@@ -1461,6 +1556,47 @@ export default function ChatWindow() {
             }
           }}
         />
+      )}
+
+      {/* Fullscreen Image Preview Modal */}
+      {previewImage && (
+        <div
+          className="fixed inset-0 bg-black/90 backdrop-blur-sm z-[9999] flex flex-col items-center justify-center p-4 animate-in fade-in duration-200"
+          onClick={() => setPreviewImage(null)}
+        >
+          {/* Close button top right */}
+          <button
+            onClick={() => setPreviewImage(null)}
+            className="absolute top-4 right-4 p-2 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors z-[10000]"
+            title="Close Preview"
+          >
+            <X size={24} />
+          </button>
+
+          {/* Download button top right next to close */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleDownloadImage(previewImage, `preview-image-${Date.now()}.png`);
+            }}
+            className="absolute top-4 right-16 p-2 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors z-[10000] flex items-center justify-center"
+            title="Download Image"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+          </button>
+
+          {/* Centered Large Image */}
+          <div
+            className="relative max-w-full max-h-[85vh] flex items-center justify-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={previewImage}
+              alt="Fullscreen Preview"
+              className="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl select-none"
+            />
+          </div>
+        </div>
       )}
     </div>
   );

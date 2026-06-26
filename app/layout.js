@@ -1,6 +1,7 @@
 import '@/app/globals.css';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { WorkspaceProvider } from '@/contexts/WorkspaceContext';
+import { CallProvider } from '@/contexts/CallContext';
 import { Toaster } from "toastflux";
 import "toastflux/styles/toast.css";
 
@@ -25,10 +26,12 @@ export default function RootLayout({ children }) {
       </head>
       <body suppressHydrationWarning className="antialiased bg-slate-50 text-slate-900">
         <AuthProvider>
-          <WorkspaceProvider>
-            {children}
-            <Toaster theme="dark" />
-          </WorkspaceProvider>
+          <CallProvider>
+            <WorkspaceProvider>
+              {children}
+              <Toaster theme="dark" />
+            </WorkspaceProvider>
+          </CallProvider>
         </AuthProvider>
       </body>
     </html>
