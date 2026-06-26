@@ -1045,8 +1045,8 @@ export default function ChatWindow() {
                           )}
                           {translatedMessages[msg.id] && (
                             <div className="mt-1 pt-1.5 border-t border-slate-200 dark:border-slate-600/50">
-                              <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">{translatedMessages[msg.id].lang} translation</span>
-                              <p className="whitespace-pre-wrap leading-relaxed text-[13px] text-white dark:text-slate-200 mt-0.5">{translatedMessages[msg.id].text}</p>
+                              <span className="text-[9px] font-bold text-[#bca1f9] uppercase tracking-wider">{translatedMessages[msg.id].lang} translation</span>
+                              <p className="whitespace-pre-wrap text-[#bca1f9] leading-relaxed text-[13px] text-white dark:text-slate-200 mt-0.5">{translatedMessages[msg.id].text}</p>
                             </div>
                           )}
                         </div>

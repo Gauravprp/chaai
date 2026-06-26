@@ -87,6 +87,13 @@ export function WorkspaceProvider({ children }) {
       window.addEventListener('click', handleFirstInteraction);
       window.addEventListener('keydown', handleFirstInteraction);
 
+      // Register Service Worker for Mobile Notifications
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').catch(err => {
+          console.warn('SW registration failed:', err);
+        });
+      }
+
 
       const cachedProj = localStorage.getItem('tf_active_project');
       if (cachedProj) {
@@ -875,10 +882,23 @@ export function WorkspaceProvider({ children }) {
                 else if (payload.new.message_type === 'document') body = '📄 Sent a document';
 
                 try {
-                  new Notification(`New message from ${senderName}`, {
-                    body,
-                    icon: sender?.avatar_url || '/favicon.svg'
-                  });
+                  if (navigator.serviceWorker) {
+                    navigator.serviceWorker.ready.then(registration => {
+                      if (registration && registration.showNotification) {
+                        registration.showNotification(`New message from ${senderName}`, {
+                          body,
+                          icon: sender?.avatar_url || '/favicon.svg'
+                        });
+                      } else {
+                        // Fallback
+                        new Notification(`New message from ${senderName}`, { body, icon: sender?.avatar_url || '/favicon.svg' });
+                      }
+                    }).catch(swErr => {
+                      new Notification(`New message from ${senderName}`, { body, icon: sender?.avatar_url || '/favicon.svg' });
+                    });
+                  } else {
+                    new Notification(`New message from ${senderName}`, { body, icon: sender?.avatar_url || '/favicon.svg' });
+                  }
                 } catch (e) { console.warn("Browser notification failed:", e); }
               }
             }
