@@ -36,10 +36,10 @@ export default function ProjectTree({ onSelectView }) {
   };
 
   // Sort members by last message timestamp in directChatSummary (newest on top)
-  const projectMembers = members.filter(m => 
+  const projectMembers = members.filter(m =>
     !activeProject?.employees ||
-    activeProject?.employees?.includes(m.id) || 
-    activeProject?.id === 'all' || 
+    activeProject?.employees?.includes(m.id) ||
+    activeProject?.id === 'all' ||
     activeProject?.id === 'prp-webs-default'
   );
 
@@ -66,20 +66,6 @@ export default function ProjectTree({ onSelectView }) {
 
   return (
     <div className="flex-1 flex flex-col min-h-0 overflow-y-auto py-4 px-2 space-y-4">
-      {isFetchingTasks ? (
-        <div className="space-y-4 px-2">
-           <div className="h-4 bg-slate-200 rounded w-1/3 animate-pulse"></div>
-           {[1, 2].map(i => (
-             <div key={i} className="flex items-center gap-3">
-               <div className="w-8 h-8 rounded-lg bg-slate-200 animate-pulse shrink-0"></div>
-               <div className="flex-1 space-y-2">
-                 <div className="h-3 bg-slate-200 rounded w-1/2 animate-pulse"></div>
-               </div>
-             </div>
-           ))}
-        </div>
-      ) : (
-        <>
           {/* 0. Group Chat Section */}
           {groupChannel && (
             <div className="space-y-1">
@@ -153,8 +139,7 @@ export default function ProjectTree({ onSelectView }) {
               ))}
             </div>
           )}
-        </>
-      )}
+
 
 
       {/* 1. Employees Section */}

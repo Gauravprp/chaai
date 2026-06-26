@@ -15,6 +15,31 @@
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/workspace/page.js"
+    ],
+    "/api/employees/route": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/api/employees/route.js"
+    ],
+    "/api/tasks/counts/route": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/api/tasks/counts/route.js"
+    ],
+    "/api/projects/route": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/api/projects/route.js"
+    ],
+    "/api/ai/rewrite/route": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/api/ai/rewrite/route.js"
+    ],
+    "/api/ai/translate/route": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/api/ai/translate/route.js"
     ]
   }
 }
