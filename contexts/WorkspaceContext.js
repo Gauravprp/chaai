@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from './AuthContext';
+import { toast } from 'toastflux';
 
 const WorkspaceContext = createContext({});
 
@@ -860,7 +861,7 @@ export function WorkspaceProvider({ children }) {
             loadDirectChatSummary();
 
             // Notifications and Sound
-            if (currentUser && toUUID(payload.new.sender_id) !== toUUID(currentUser.id)) {
+            if (currentUser && toUUID(payload.new.sender_id).toLowerCase() !== toUUID(currentUser.id).toLowerCase()) {
               try {
                 // Play subtle notification sound
                 const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
@@ -871,16 +872,21 @@ export function WorkspaceProvider({ children }) {
                 }
               } catch (e) { console.warn("Audio API failed:", e); }
 
+              const sender = membersRef.current.find(m => toUUID(m.id).toLowerCase() === toUUID(payload.new.sender_id).toLowerCase());
+              const senderName = sender?.name || 'Someone';
+              let body = payload.new.content || '';
+              if (payload.new.message_type === 'image') body = '📸 Sent an image';
+              else if (payload.new.message_type === 'video') body = '🎥 Sent a video';
+              else if (payload.new.message_type === 'voice') body = '🎤 Sent a voice message';
+              else if (payload.new.message_type === 'document') body = '📄 Sent a document';
+
+              // Show In-App Toast Notification if not in the currently active channel
+              if (!currentChan || toUUID(payload.new.conversation_id).toLowerCase() !== toUUID(currentChan.id).toLowerCase()) {
+                toast.info(`📩 ${senderName}: ${body}`, { duration: 4000 });
+              }
+
               // Show Browser Notification
               if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') {
-                const sender = membersRef.current.find(m => toUUID(m.id) === toUUID(payload.new.sender_id));
-                const senderName = sender?.name || 'Someone';
-                let body = payload.new.content || '';
-                if (payload.new.message_type === 'image') body = '📸 Sent an image';
-                else if (payload.new.message_type === 'video') body = '🎥 Sent a video';
-                else if (payload.new.message_type === 'voice') body = '🎤 Sent a voice message';
-                else if (payload.new.message_type === 'document') body = '📄 Sent a document';
-
                 try {
                   if (navigator.serviceWorker) {
                     navigator.serviceWorker.ready.then(registration => {
@@ -890,7 +896,6 @@ export function WorkspaceProvider({ children }) {
                           icon: sender?.avatar_url || '/favicon.svg'
                         });
                       } else {
-                        // Fallback
                         new Notification(`New message from ${senderName}`, { body, icon: sender?.avatar_url || '/favicon.svg' });
                       }
                     }).catch(swErr => {

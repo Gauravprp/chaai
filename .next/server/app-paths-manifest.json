@@ -1,6 +1,7 @@
 {
   "/api/tasks/counts/route": "app/api/tasks/counts/route.js",
-  "/api/employees/route": "app/api/employees/route.js",
   "/api/projects/route": "app/api/projects/route.js",
-  "/workspace/page": "app/workspace/page.js"
+  "/api/employees/route": "app/api/employees/route.js",
+  "/workspace/page": "app/workspace/page.js",
+  "/page": "app/page.js"
 }
