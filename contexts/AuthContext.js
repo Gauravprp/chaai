@@ -249,6 +249,7 @@ export function AuthProvider({ children }) {
         name: updatedUser.name,
         role: updatedUser.role,
         department: updatedUser.department || 'Tech',
+        avatar_url: updatedUser.avatar_url || null,
       });
     } catch (err) {
       console.warn("Could not update profile on supabase:", err);

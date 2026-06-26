@@ -1,9 +1,11 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
-import { Users, Folder } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { Users, Folder, Plus, Hash } from 'lucide-react';
 import { generateAvatar } from '@/utils/avatar';
+import CreateGroupModal from './CreateGroupModal';
 const toUUID = (str) => {
   if (!str) return '00000000-0000-0000-0000-000000000000';
   const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -21,8 +23,12 @@ export default function ProjectTree({ onSelectView }) {
     activeChannel,
     setActiveChannel,
     getOrCreateDMChannel,
+    createCustomGroup,
     directChatSummary,
+    isFetchingTasks,
   } = useWorkspace();
+  const { user } = useAuth();
+  const [showCreateGroup, setShowCreateGroup] = useState(false);
 
   const handleMemberClick = async (memberId) => {
     await getOrCreateDMChannel(memberId);
@@ -30,72 +36,147 @@ export default function ProjectTree({ onSelectView }) {
   };
 
   // Sort members by last message timestamp in directChatSummary (newest on top)
-  const projectMembers = members.filter(m => activeProject?.employees?.includes(m.id) || activeProject?.id === 'all');
-  
+  const projectMembers = members.filter(m => 
+    !activeProject?.employees ||
+    activeProject?.employees?.includes(m.id) || 
+    activeProject?.id === 'all' || 
+    activeProject?.id === 'prp-webs-default'
+  );
+
   const sortedMembers = [...projectMembers].sort((a, b) => {
     const uuidA = toUUID(a.id);
     const uuidB = toUUID(b.id);
     const summaryA = directChatSummary?.[uuidA];
     const summaryB = directChatSummary?.[uuidB];
-    
+
     const timeA = summaryA?.lastMessage?.created_at ? new Date(summaryA.lastMessage.created_at).getTime() : 0;
     const timeB = summaryB?.lastMessage?.created_at ? new Date(summaryB.lastMessage.created_at).getTime() : 0;
-    
+
     if (timeA !== timeB) {
       return timeB - timeA;
     }
-    
+
     // Fallback to alphabetical sorting of names
     return (a.name || '').localeCompare(b.name || '');
   });
 
   // Safely find the project group chat
-  const groupChannel = channels.find(c => c.name === 'general' || !c.name?.startsWith('dm'));
+  const groupChannel = channels.find(c => c.name === 'general');
+  const customGroups = channels.filter(c => c.name !== 'general' && !c.name?.startsWith('dm_') && !c.name?.startsWith('dm-'));
 
   return (
     <div className="flex-1 flex flex-col min-h-0 overflow-y-auto py-4 px-2 space-y-4">
-      {/* 0. Group Chat Section */}
-      {groupChannel && (
-        <div className="space-y-1">
-          <button
-            onClick={() => {
-              setActiveChannel(groupChannel);
-              onSelectView('chat');
-            }}
-            className={`w-full flex items-center gap-2.5 p-2.5 rounded-lg text-left text-sm ${
-              activeChannel?.id === groupChannel.id ? 'bg-indigo-50/60 text-indigo-600 font-semibold' : 'text-slate-700 hover:bg-slate-100'
-            } smooth-transition`}
-          >
-            <div className="relative shrink-0">
-              <img
-                src={activeProject?.avatar_url || generateAvatar(activeProject?.name || 'Project')}
-                alt={activeProject?.name || 'Project Group Chat'}
-                className="w-8 h-8 rounded-lg object-cover border border-slate-200"
-              />
-              <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border-2 border-white bg-emerald-500"></span>
-            </div>
-            <div className="truncate flex-1">
-              <div className="flex items-center justify-between">
-                <span className="truncate font-medium">{activeProject?.name || 'Project'} Group Chat</span>
-              </div>
-              <div className="text-[10px] text-slate-400 truncate flex items-center gap-1">
-                <span>All Project Members</span>
-              </div>
-            </div>
-          </button>
+      {isFetchingTasks ? (
+        <div className="space-y-4 px-2">
+           <div className="h-4 bg-slate-200 rounded w-1/3 animate-pulse"></div>
+           {[1, 2].map(i => (
+             <div key={i} className="flex items-center gap-3">
+               <div className="w-8 h-8 rounded-lg bg-slate-200 animate-pulse shrink-0"></div>
+               <div className="flex-1 space-y-2">
+                 <div className="h-3 bg-slate-200 rounded w-1/2 animate-pulse"></div>
+               </div>
+             </div>
+           ))}
         </div>
+      ) : (
+        <>
+          {/* 0. Group Chat Section */}
+          {groupChannel && (
+            <div className="space-y-1">
+              <button
+                onClick={() => {
+                  setActiveChannel(groupChannel);
+                  onSelectView('chat');
+                }}
+                className={`relative w-full flex items-center gap-3 p-2.5 rounded-xl text-left text-sm group transition-colors duration-200 ${activeChannel?.id === groupChannel.id ? 'text-slate-900 font-semibold' : 'text-slate-600 hover:bg-slate-100/80 hover:text-slate-900'
+                  }`}
+              >
+                {activeChannel?.id === groupChannel.id && (
+                  <div
+                    className="absolute inset-0 bg-white rounded-xl shadow-sm border border-slate-200/60 transition-all duration-300"
+                  />
+                )}
+                <div className="relative shrink-0 z-10">
+                  <img
+                    src={activeProject?.avatar_url || generateAvatar(activeProject?.name || 'Project')}
+                    alt={activeProject?.name || 'Project Group Chat'}
+                    className="w-8 h-8 rounded-lg object-cover border border-slate-200"
+                  />
+                  <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border-2 border-white bg-emerald-500"></span>
+                </div>
+                <div className="truncate flex-1">
+                  <div className="flex items-center justify-between">
+                    <span className="truncate font-medium">{activeProject?.name || 'Project'} Group Chat</span>
+                  </div>
+                  <div className="text-[10px] text-slate-400 truncate flex items-center gap-1">
+                    <span>All Project Members</span>
+                  </div>
+                </div>
+              </button>
+            </div>
+          )}
+
+          {/* Custom Groups Section */}
+          {customGroups.length > 0 && (
+            <div className="space-y-1 mt-4">
+              <div className="flex items-center justify-between px-2 mb-2">
+                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                  <Folder size={12} />
+                  Groups
+                </span>
+                <span className="text-[10px] font-medium bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded-full">
+                  {customGroups.length}
+                </span>
+              </div>
+              {customGroups.map(group => (
+                <button
+                  key={group.id}
+                  onClick={() => {
+                    setActiveChannel(group);
+                    onSelectView('chat');
+                  }}
+                  className={`relative w-full flex items-center gap-3 p-2.5 rounded-xl text-left text-sm group transition-colors duration-200 ${activeChannel?.id === group.id ? 'text-slate-900 font-semibold' : 'text-slate-600 hover:bg-slate-100/80 hover:text-slate-900'
+                    }`}
+                >
+                  {activeChannel?.id === group.id && (
+                    <div
+                      className="absolute inset-0 bg-white rounded-xl shadow-sm border border-slate-200/60 transition-all duration-300"
+                    />
+                  )}
+                  <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center shrink-0 z-10 border border-indigo-100/50">
+                    <Hash size={14} className="text-indigo-500" />
+                  </div>
+                  <div className="truncate flex-1 z-10">
+                    <span className="truncate font-medium">{group.name}</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
+        </>
       )}
 
+
       {/* 1. Employees Section */}
-      <div className="space-y-2 flex-1 flex flex-col min-h-0">
+      <div className="space-y-2 flex-1 flex flex-col min-h-0 mt-4">
         <div className="flex items-center justify-between px-2 text-xs font-bold text-slate-500 uppercase tracking-wider">
           <span className="flex items-center gap-1.5">
             <Users size={14} className="text-slate-400" />
             <span>Members</span>
           </span>
-          <span className="text-[10px] bg-slate-200/60 text-slate-600 px-1.5 py-0.5 rounded-full font-semibold">
-            {sortedMembers.length}
-          </span>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setShowCreateGroup(true)}
+              className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-600 hover:bg-emerald-100 transition-colors"
+              title="Create new group chat"
+            >
+              <Plus size={12} strokeWidth={3} />
+              <span className="text-[10px] font-bold">Group</span>
+            </button>
+            <span className="text-[10px] bg-slate-200/60 text-slate-600 px-1.5 py-0.5 rounded-full font-semibold">
+              {sortedMembers.length}
+            </span>
+          </div>
         </div>
 
         <div className="space-y-1 overflow-y-auto flex-1 pr-1 mt-2">
@@ -110,11 +191,15 @@ export default function ProjectTree({ onSelectView }) {
               <button
                 key={member.id}
                 onClick={() => handleMemberClick(member.id)}
-                className={`w-full flex items-center gap-2.5 p-2.5 rounded-lg text-left text-sm ${
-                  isSelected ? 'bg-indigo-50/60 text-indigo-600 font-semibold' : 'text-slate-700 hover:bg-slate-100'
-                } smooth-transition`}
+                className={`relative w-full flex items-center gap-3 p-2.5 rounded-xl text-left text-sm group transition-colors duration-200 ${isSelected ? 'text-slate-900 font-semibold' : 'text-slate-600 hover:bg-slate-100/80 hover:text-slate-900'
+                  }`}
               >
-                <div className="relative shrink-0">
+                {isSelected && (
+                  <div
+                    className="absolute inset-0 bg-white rounded-xl shadow-sm border border-slate-200/60 transition-all duration-300"
+                  />
+                )}
+                <div className="relative shrink-0 z-10">
                   <img
                     src={member.avatar_url || generateAvatar(member.name || 'User')}
                     alt={member.name}
@@ -127,19 +212,17 @@ export default function ProjectTree({ onSelectView }) {
                     );
                   })()}
                 </div>
-                <div className="truncate flex-1">
+                <div className="truncate flex-1 z-10">
                   <div className="flex items-center justify-between">
-                    <span className="truncate font-medium">{member.name}</span>
-                    {unreadCount > 0 && (
-                      <span className="bg-rose-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center shrink-0">
-                        {unreadCount > 9 ? '9+' : unreadCount}
-                      </span>
-                    )}
+                    <span className={`truncate ${unreadCount > 0 ? 'font-bold text-slate-900' : 'font-medium'}`}>{member.name}</span>
                   </div>
-                  <div className="text-[10px] text-slate-400 truncate flex items-center gap-1">
+                  <div className="text-[11px] text-slate-400 truncate flex items-center gap-1 mt-0.5">
                     {lastMsg || unreadCount > 0 ? (
-                      <span className="text-slate-500 truncate font-normal">
-                        {unreadCount <= 1 ? (lastMsg ? lastMsg.content : '') : unreadCount > 4 ? '4+ new messages' : `${unreadCount} new messages`}
+                      <span className={`truncate ${unreadCount > 0 ? 'text-primary-600 font-bold' : 'text-slate-500'}`}>
+                        {unreadCount > 0
+                          ? (unreadCount > 4 ? '4+ new messages' : (unreadCount === 1 ? '1 new message' : `${unreadCount} new messages`))
+                          : (lastMsg ? lastMsg.content : '')
+                        }
                       </span>
                     ) : (
                       <>
@@ -159,6 +242,19 @@ export default function ProjectTree({ onSelectView }) {
           )}
         </div>
       </div>
+
+      {showCreateGroup && (
+        <CreateGroupModal
+          members={projectMembers}
+          currentUser={user}
+          onClose={() => setShowCreateGroup(false)}
+          onCreate={async (name, selectedMembers) => {
+            await createCustomGroup(name, selectedMembers);
+            setShowCreateGroup(false);
+            onSelectView('chat');
+          }}
+        />
+      )}
     </div>
   );
 }

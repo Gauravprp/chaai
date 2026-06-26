@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { Search, Folder, User, MessageSquare } from 'lucide-react';
+import { generateAvatar } from '@/utils/avatar';
 
 export default function SearchBar({ onSelectView }) {
   const { projects, members, messages, setActiveProject, getOrCreateDMChannel } = useWorkspace();
@@ -70,7 +71,7 @@ export default function SearchBar({ onSelectView }) {
   const hasResults = results.projects.length > 0 || results.employees.length > 0 || results.chats.length > 0;
 
   return (
-    <div ref={containerRef} className="relative w-80 max-w-xs z-50">
+    <div ref={containerRef} className="relative w-full max-w-lg z-50">
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
         <input
@@ -82,23 +83,25 @@ export default function SearchBar({ onSelectView }) {
           }}
           onFocus={() => setIsOpen(true)}
           placeholder="Search projects, users, chat..."
-          className="w-full pl-9 pr-4 py-1.5 bg-slate-100 border border-slate-200 rounded-lg text-xs focus:outline-none focus:bg-white focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 smooth-transition"
+          className="w-full pl-10 pr-4 py-2 bg-slate-100/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-full text-sm focus:outline-none focus:bg-white dark:focus:bg-slate-800 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all duration-300"
         />
       </div>
 
       {isOpen && query.trim() && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-xl max-h-96 overflow-y-auto p-2 space-y-3">
+        <div className="absolute top-full left-0 right-0 mt-2 bg-white/95 backdrop-blur-xl dark:bg-slate-800/95 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-xl max-h-96 overflow-y-auto p-2 space-y-3 z-50">
           {/* Projects (First Priority) */}
           {results.projects.length > 0 && (
             <div className="space-y-1">
-              <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-2">Projects</div>
+              <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-3 mb-1">Projects</div>
               {results.projects.map(p => (
                 <button
                   key={p.id}
                   onClick={() => handleSelectProject(p)}
-                  className="w-full flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-slate-50 text-left text-xs text-slate-700 smooth-transition"
+                  className="w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 text-left text-sm text-slate-700 dark:text-slate-200 transition-colors"
                 >
-                  <Folder size={14} className="text-slate-400 shrink-0" />
+                  <div className="p-1.5 bg-primary-50 dark:bg-primary-900/30 rounded-lg text-primary-500 shrink-0">
+                    <Folder size={14} />
+                  </div>
                   <span className="truncate font-medium">{p.name}</span>
                 </button>
               ))}
@@ -108,17 +111,21 @@ export default function SearchBar({ onSelectView }) {
           {/* Employees (Second Priority) */}
           {results.employees.length > 0 && (
             <div className="space-y-1">
-              <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-2">Employees</div>
+              <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-3 mb-1">Employees</div>
               {results.employees.map(e => (
                 <button
                   key={e.id}
                   onClick={() => handleSelectEmployee(e)}
-                  className="w-full flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-slate-50 text-left text-xs text-slate-700 smooth-transition"
+                  className="w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 text-left text-sm text-slate-700 dark:text-slate-200 transition-colors"
                 >
-                  <User size={14} className="text-slate-400 shrink-0" />
-                  <div className="truncate">
+                  {e.avatar_url ? (
+                    <img src={e.avatar_url} alt={e.name} className="w-8 h-8 rounded-full object-cover shrink-0 border border-slate-200 dark:border-slate-600" />
+                  ) : (
+                    <img src={generateAvatar(e.name || 'User')} alt={e.name} className="w-8 h-8 rounded-full shrink-0 border border-slate-200 dark:border-slate-600" />
+                  )}
+                  <div className="truncate flex flex-col">
                     <span className="font-medium">{e.name}</span>
-                    <span className="text-[10px] text-slate-400 ml-1">({e.role})</span>
+                    <span className="text-[11px] text-slate-500 dark:text-slate-400">{e.role}</span>
                   </div>
                 </button>
               ))}
@@ -128,20 +135,22 @@ export default function SearchBar({ onSelectView }) {
           {/* Chats (Third Priority) */}
           {results.chats.length > 0 && (
             <div className="space-y-1">
-              <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-2">Messages</div>
+              <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-3 mb-1">Messages</div>
               {results.chats.map(c => (
                 <div
                   key={c.id}
-                  className="w-full flex items-start gap-2 px-2 py-1.5 rounded-lg hover:bg-slate-50 text-left text-xs text-slate-700 smooth-transition cursor-pointer"
+                  className="w-full flex items-start gap-3 px-3 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 text-left text-sm text-slate-700 dark:text-slate-200 transition-colors cursor-pointer"
                   onClick={() => {
                     setQuery('');
                     setIsOpen(false);
                   }}
                 >
-                  <MessageSquare size={14} className="text-slate-400 shrink-0 mt-0.5" />
-                  <div className="truncate">
-                    <div className="font-semibold text-slate-600 text-[10px]">{c.profiles?.name || 'User'}</div>
-                    <div className="truncate text-slate-500 italic">"{c.content}"</div>
+                  <div className="p-1.5 bg-blue-50 dark:bg-blue-900/30 rounded-lg text-blue-500 shrink-0 mt-0.5">
+                    <MessageSquare size={14} />
+                  </div>
+                  <div className="truncate flex flex-col">
+                    <div className="font-semibold text-slate-800 dark:text-slate-200 text-xs">{c.profiles?.name || 'User'}</div>
+                    <div className="truncate text-slate-500 dark:text-slate-400 italic text-[11px]">"{c.content}"</div>
                   </div>
                 </div>
               ))}

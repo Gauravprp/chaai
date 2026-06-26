@@ -1,0 +1,146 @@
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
+import { useWorkspace } from '@/contexts/WorkspaceContext';
+import { User, Camera, Loader2 } from 'lucide-react';
+import { generateAvatar } from '@/utils/avatar';
+import { supabase } from '@/lib/supabase';
+
+export default function ProfileModal({ isOpen, onClose }) {
+  const { user, profile, updateProfile } = useAuth();
+  const { members } = useWorkspace();
+
+  const currentMember = members?.find(m => m.id === user?.dyzoId || m.id === profile?.id);
+  const [name, setName] = useState(profile?.name || '');
+  const [role, setRole] = useState(profile?.role || '');
+  const [department, setDepartment] = useState(profile?.department || '');
+  const [avatarUrl, setAvatarUrl] = useState(profile?.avatar_url || '');
+  const [isUploading, setIsUploading] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      setName(profile?.name || '');
+      setRole(profile?.role || '');
+      setDepartment(profile?.department || '');
+      setAvatarUrl(profile?.avatar_url || '');
+    }
+  }, [isOpen, profile]);
+
+  if (!isOpen) return null;
+
+  const handleAvatarUpload = async (e) => {
+    try {
+      if (!e.target.files || e.target.files.length === 0) return;
+      const file = e.target.files[0];
+      setIsUploading(true);
+
+      const fileExt = file.name.split('.').pop();
+      const fileName = `avatar_${profile.id}_${Date.now()}.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('chat-attachments')
+        .upload(fileName, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data } = supabase.storage
+        .from('chat-attachments')
+        .getPublicUrl(fileName);
+
+      setAvatarUrl(data.publicUrl);
+    } catch (err) {
+      alert('Error uploading image: ' + err.message);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleUpdateProfile = async (e) => {
+    e.preventDefault();
+    try {
+      await updateProfile({ name, role, department, avatar_url: avatarUrl });
+      onClose();
+    } catch (err) {
+      alert("Error: " + err.message);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-[100]">
+      <div className="bg-white p-6 rounded-xl shadow-xl w-[90%] max-w-sm border border-slate-100">
+        <div className="flex items-center gap-2 mb-4">
+          <User className="text-indigo-600" />
+          <h3 className="text-lg font-bold">Edit Profile</h3>
+        </div>
+
+        <div className="flex flex-col items-center mb-6 relative">
+          <div className="relative group">
+            <img
+              src={avatarUrl || profile?.avatar_url || currentMember?.avatar_url || generateAvatar(name || 'User')}
+              alt="Avatar Preview"
+              className="w-20 h-20 rounded-full object-cover border-4 border-slate-50 shadow-sm bg-white"
+            />
+            <label className="absolute inset-0 flex items-center justify-center bg-black/50 text-white rounded-full opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity">
+              {isUploading ? <Loader2 size={24} className="animate-spin" /> : <Camera size={24} />}
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleAvatarUpload}
+                disabled={isUploading}
+              />
+            </label>
+          </div>
+          <span className="text-xs text-slate-400 mt-2">Click to change avatar</span>
+        </div>
+
+        <form onSubmit={handleUpdateProfile} className="space-y-3">
+          <div>
+            <label className="text-xs font-semibold text-slate-500 block mb-1">Full Name</label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full border border-slate-200 p-2 rounded-lg text-sm focus:outline-none focus:border-indigo-600"
+              required
+            />
+          </div>
+          <div>
+            <label className="text-xs font-semibold text-slate-500 block mb-1">Role / Job Title</label>
+            <input
+              type="text"
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+              className="w-full border border-slate-200 p-2 rounded-lg text-sm focus:outline-none focus:border-indigo-600"
+            />
+          </div>
+          <div>
+            <label className="text-xs font-semibold text-slate-500 block mb-1">Department</label>
+            <input
+              type="text"
+              value={department}
+              onChange={(e) => setDepartment(e.target.value)}
+              className="w-full border border-slate-200 p-2 rounded-lg text-sm focus:outline-none focus:border-indigo-600"
+            />
+          </div>
+          <div className="flex justify-end gap-2 text-sm pt-2">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-3 py-1.5 rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-medium"
+            >
+              Save Changes
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}

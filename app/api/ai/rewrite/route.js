@@ -31,14 +31,16 @@ CRITICAL RULES:
       systemPrompt += `\n* IMPORTANT: Ensure the final text is strictly around ${wordLimit} words.`;
     }
 
-    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    const API_URL = process.env.AI_BASE_URL || 'https://api.openai.com/v1/chat/completions';
+
+    const response = await fetch(API_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${API_KEY}`
       },
       body: JSON.stringify({
-        model: 'openrouter/free',
+        model: 'grok-4.3',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: `<text_to_rewrite>\n${text}\n</text_to_rewrite>` }
@@ -48,7 +50,7 @@ CRITICAL RULES:
 
     if (!response.ok) {
       const errText = await response.text();
-      throw new Error(`OpenRouter returned status ${response.status}: ${errText}`);
+      throw new Error(`xAI API returned status ${response.status}: ${errText}`);
     }
 
     const data = await response.json();

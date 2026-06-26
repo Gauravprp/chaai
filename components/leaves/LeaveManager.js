@@ -38,7 +38,7 @@ export default function LeaveManager() {
       if (error) throw error;
 
       setLeaves(prev => [data, ...prev]);
-      
+
       // Auto-post notification in the active team channel (if available)
       if (activeChannel) {
         await supabase.from('messages').insert({

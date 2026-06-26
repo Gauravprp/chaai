@@ -1,0 +1,5855 @@
+Status: 404
+Body: <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <title>Page not found at /tasks/</title>
+  <meta name="robots" content="NONE,NOARCHIVE">
+  <style type="text/css">
+    html * { padding:0; margin:0; }
+    body * { padding:10px 20px; }
+    body * * { padding:0; }
+    body { font:small sans-serif; background:#eee; color:#000; }
+    body>div { border-bottom:1px solid #ddd; }
+    h1 { font-weight:normal; margin-bottom:.4em; }
+    h1 span { font-size:60%; color:#666; font-weight:normal; }
+    table { border:none; border-collapse: collapse; width:100%; }
+    td, th { vertical-align:top; padding:2px 3px; }
+    th { width:12em; text-align:right; color:#666; padding-right:.5em; }
+    #info { background:#f6f6f6; }
+    #info ol { margin: 0.5em 4em; }
+    #info ol li { font-family: monospace; }
+    #summary { background: #ffc; }
+    #explanation { background:#eee; border-bottom: 0px none; }
+    pre.exception_value { font-family: sans-serif; color: #575757; font-size: 1.5em; margin: 10px 0 10px 0; }
+  </style>
+</head>
+<body>
+  <div id="summary">
+    <h1>Page not found <span>(404)</span></h1>
+    
+    <table class="meta">
+      <tr>
+        <th>Request Method:</th>
+        <td>GET</td>
+      </tr>
+      <tr>
+        <th>Request URL:</th>
+        <td>https://api.dyzo.ai/tasks/</td>
+      </tr>
+      
+    </table>
+  </div>
+  <div id="info">
+    
+      <p>
+      Using the URLconf defined in <code>pw_pulse_django.urls</code>,
+      Django tried these URL patterns, in this order:
+      </p>
+      <ol>
+        
+          <li>
+            
+                
+                
+            
+          </li>
+        
+          <li>
+            
+                admin/
+                
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                developer/
+                
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                login/
+                [name='employee-login']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                google-sheets/
+                
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                new-subscription/
+                
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/calendar/
+                
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                dashboard-health/
+                
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/google-login/
+                [name='google-login']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/apple-login/
+                [name='apple-login']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                dashboard/&lt;int:company_id&gt;/
+                [name='company-detail']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                invitation/&lt;int:pk&gt;/
+                [name='delete-invitation']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                task/user/&lt;int:user_id&gt;/
+                [name='task-total-hours']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                task-count/company/&lt;int:company_id&gt;/&lt;int:employee_id&gt;/
+                [name='task-count']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                task/project/&lt;int:project_id&gt;/employee/&lt;int:user_id&gt;/
+                [name='task_project_hours']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                task/deleted/user/&lt;int:user_id&gt;/
+                [name='deleted-tasks-by-user']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                task/restore/bulk/
+                [name='restore-bulk-tasks']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                tasks/&lt;int:task_id&gt;/like/&lt;int:user_id&gt;/
+                [name='task-like']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                token-login/
+                [name='token-login']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                otp-login/
+                [name='otp-login']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/documentation/
+                [name='api-documentation']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/project-tasks-summary/&lt;int:user_id&gt;/
+                
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                task/all/user/&lt;int:user_id&gt;/
+                [name='all-task-total-hours']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                change-message/
+                [name='change-message']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/employee/tasks/
+                [name='employee-task-stats']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                project/company/&lt;int:company_id&gt;/
+                [name='project-list-by-company']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                project/company/&lt;int:company_id&gt;/&lt;int:employee_id&gt;/
+                [name='projects-by-employee']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                project-timer/company/&lt;int:company_id&gt;/&lt;int:employee_id&gt;/
+                [name='projects-by-employee']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                mcp/project/company/&lt;int:company_id&gt;/&lt;int:employee_id&gt;/
+                [name='projects-by-employee']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                projects/pagination/company/&lt;int:company_id&gt;/projects/
+                [name='project-list-by-company-with-pagination']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                project/company/pagination/&lt;int:company_id&gt;/
+                [name='project-pagination-list-by-company']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                projects/company-working-monthly/&lt;int:company_id&gt;/&lt;str:year_month&gt;/
+                [name='company-working-projects-monthly']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                task/&lt;int:pk&gt;/&lt;int:userId&gt;/
+                [name='tasks-update']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                taskupdatewithfile/&lt;int:pk&gt;/&lt;int:userId&gt;/
+                [name='tasks-update']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                update_task_status/&lt;int:taskId&gt;/
+                [name='update_task_status']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                employee/list/&lt;int:company_id&gt;/
+                [name='employee-list']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                employee/me/&lt;int:_id&gt;/
+                [name='employee-detail']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                task/period/company/&lt;int:company_id&gt;/
+                [name='task-data-between-dates']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/tasks/summary-detail/&lt;int:company_id&gt;/
+                [name='task-detail']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/tasks/summary-detail/v2/&lt;int:company_id&gt;/
+                [name='task-detail-v2']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/tasks/summary-detail-download/&lt;int:company_id&gt;/
+                [name='task-detail-download']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/tasks/client-detail-report/&lt;int:company_id&gt;/
+                [name='client-task-detail']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/tasks/client-detail-report-download/&lt;int:company_id&gt;/
+                [name='client-task-detail-download']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                taskLogs/task/&lt;int:taskId&gt;/
+                [name='task-logs-by-task']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                employee-task-logs/
+                [name='employee-task-logs']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                projects/assignee/&lt;int:assignee_id&gt;/
+                [name='projects-by-assignee']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                pagination/project/company/&lt;int:company_id&gt;/
+                [name='projects-by-company']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                task/project/&lt;str:project_id&gt;/
+                [name='tasks-by-project-and-date']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                report/company/&lt;int:company_id&gt;/export-csv-report/
+                [name='export_csv_report']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/company/&lt;int:company_id&gt;/user/&lt;int:user_id&gt;/export-csv-report/&lt;str:month&gt;/
+                [name='export_csv_report']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/task-summaries/&lt;int:project_id&gt;/
+                [name='task-summaries-api']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/project/delete/&lt;int:_id&gt;/
+                [name='project-delete']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                project/&lt;int:_id&gt;/
+                [name='project-create-update']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                project/
+                [name='project-create']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                employee/list/activeUsers/&lt;int:company_id&gt;/
+                [name='activeUsers-employee-list']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                employee/list/InactiveUsers/&lt;int:company_id&gt;/
+                [name='InactiveUsers-employee-list']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                employee/&lt;int:_id&gt;/
+                [name='employee-delete']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                invite/
+                [name='send-email']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                welcome/
+                [name='welcome-email']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                employee/password/&lt;int:pk&gt;/
+                [name='password']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                task-summary/
+                [name='task-summary']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                screenshot/task/&lt;int:task_id&gt;/employee/&lt;int:employee_id&gt;/
+                [name='screenshots-by-task']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                screenshot/task/&lt;int:task_id&gt;/
+                [name='screenshots-AllUser-by-task']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                company/
+                [name='create_employee']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                task-statistics/&lt;int:company_id&gt;/
+                [name='task-statistics']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                incomplete-tasks/&lt;int:company_id&gt;/&lt;int:employee_id&gt;/
+                [name='incomplete-tasks']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                user-task-statistics/&lt;int:user_id&gt;/
+                [name='user-task-statistics']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                incomplete-user-tasks/&lt;int:user_id&gt;/
+                [name='user-tasks-detail']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                companies/&lt;int:companyId&gt;/
+                [name='company-info']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                employee/add/
+                [name='add-employee']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                notifications/recipient/&lt;int:recipient_id&gt;/
+                [name='notifications_by_recipient']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                notifications/new/recipient/&lt;int:recipient_id&gt;/
+                [name='notifications_new_by_recipient']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                notifications/&lt;int:notification_id&gt;/
+                [name='notification-detail']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                client/notifications/recipient/&lt;int:recipient_id&gt;/
+                [name='notifications_Client_by_recipient']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                icon/notifications/recipient/&lt;int:recipient_id&gt;/
+                [name='notifications_by_recipient']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                client/icon/notifications/recipient/&lt;int:recipient_id&gt;/
+                [name='notifications_client_by_recipient']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                reset/link/
+                [name='check-email']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                reset/verify/
+                [name='reset-password']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                mark_notifications_as_read/&lt;int:user_id&gt;/
+                [name='mark-notifications-as-read']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                client/mark_notifications_as_read/&lt;int:user_id&gt;/
+                [name='mark-Client-notifications-as-read']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                schedule/&lt;int:company_id&gt;/
+                [name='schedule-detail']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                schedule/update/&lt;int:company_id&gt;/
+                [name='schedule-update']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                company/&lt;int:company_id&gt;/leaves/
+                [name='leave-list-by-company']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                company/by-exact-date/&lt;int:company_id&gt;/
+                [name='leave-list-by-date-company']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                employee/&lt;int:employee_id&gt;/leaves/
+                [name='employee-leaves']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                leave-create/&lt;int:employee_id&gt;/
+                [name='leave-create']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                leave-create-notify/&lt;int:employee_id&gt;/
+                [name='leave-create-notify']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                leave/approve/&lt;int:leave_id&gt;/by/&lt;int:approver_employee_id&gt;/
+                [name='approve_leave']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                leave/reject/&lt;int:leave_id&gt;/by/&lt;int:approver_employee_id&gt;/
+                [name='reject-leave']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                leave/update/&lt;int:pk&gt;/&lt;int:user_id&gt;/
+                [name='leave-update']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                top-leave-takers/&lt;int:company_id&gt;/
+                [name='top_leave_takers']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                leave-report/
+                [name='leave-report']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                create-task/&lt;int:assignby_id&gt;/
+                [name='create-task']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/create-task/file/&lt;int:assignby_id&gt;/
+                [name='create-task-file']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                create-client-task/&lt;int:assignClientby_id&gt;/
+                [name='create-client-task']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                user/attendance/&lt;int:company_id&gt;/
+                [name='total-time-spent']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                user-logs/&lt;int:user_id&gt;/
+                [name='user-logs']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                employee/me/list/&lt;int:_id&gt;/
+                [name='employee-detail']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                noticeboard/&lt;int:company_id&gt;/
+                [name='noticeboard']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                breaktimes/&lt;int:company_id&gt;/
+                [name='breaktime-list']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                company/&lt;int:company_id&gt;/breaktimes/
+                [name='create-breaktime']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                employee/update-picture/&lt;int:_id&gt;/
+                [name='update-employee-picture']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                screenshot/&lt;int:screenshot_id&gt;/
+                [name='delete_screenshot']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                particular/leave/&lt;int:pk&gt;/
+                [name='leave-detail']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/user-working-hours/
+                [name='user-working-hours']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/user-working-hours-weekly/
+                [name='user-working-hours-weekly']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/user-working-hours-monthly/
+                [name='user-working-hours-monthly']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                company/&lt;int:company_id&gt;/teams/list/
+                [name='company-teams']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                teams/&lt;int:team_id&gt;/
+                [name='team-details']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                teams/create/&lt;int:leader_id&gt;/
+                [name='create-team']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                team/&lt;int:team_id&gt;/remove_member/&lt;int:member_id&gt;/
+                [name='remove-team-member']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                team/&lt;int:team_id&gt;/add_members/
+                [name='add_team_members']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                team/&lt;int:team_id&gt;/remove_members/
+                [name='remove_team_members']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                team/&lt;int:team_id&gt;/add_member/&lt;int:member_id&gt;/
+                [name='add-team-member']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                team/delete/&lt;int:team_id&gt;/&lt;int:employee_id&gt;/
+                [name='delete-team']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/update/team/&lt;int:pk&gt;/&lt;int:employee_id&gt;/
+                [name='team-update']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/team/members/&lt;int:leader_id&gt;/
+                [name='team-members']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/team-working-hours/
+                [name='user-working-hours']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/company/&lt;int:company_id&gt;/working-hours/
+                [name='employee-working-hours']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/company/&lt;int:company_id&gt;/working-hours/v2/
+                [name='employee-working-hours-v2']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/company/&lt;int:company_id&gt;/project/&lt;int:project_id&gt;/working-hours/
+                [name='employee-project-working-hours']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/attendance/&lt;str:year_month&gt;/&lt;int:company_id&gt;/
+                [name='employee-working-hours']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/attendance-extrainfo/&lt;str:year_month&gt;/&lt;int:company_id&gt;/
+                [name='comapny-employee-working-hours']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/single-employee-extrainfo/&lt;str:year_month&gt;/&lt;int:employee_id&gt;/
+                [name='employee-working-hours']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/attendance/&lt;str:year_month&gt;/&lt;int:company_id&gt;/employee/&lt;int:employee_id&gt;/
+                [name='employee-specific-working-hours']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/notifications/read/&lt;int:notification_id&gt;/
+                [name='mark_Client_notification_as_read']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/notifications/unread/&lt;int:notification_id&gt;/
+                [name='mark_notification_as_unread']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/Client/notifications/read/&lt;int:notification_id&gt;/
+                [name='mark_notification_as_read']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/projects/&lt;int:project_id&gt;/tasks/create/&lt;int:assign_by_id&gt;/
+                [name='task-create']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                leave/delete/&lt;int:leave_id&gt;/
+                [name='delete-leave']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                employee/&lt;int:pk&gt;/delete-picture-record/
+                [name='delete-employee-picture-record']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                create_task_log/
+                [name='create_task_log']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/tasks_by_project/&lt;int:project_id&gt;/
+                [name='task-by-project']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                paginated-tasks/&lt;int:user_id&gt;/&lt;int:project_id&gt;/
+                [name='paginated-new-tasks-by-project']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                paginated-tasks/&lt;int:project_id&gt;/
+                [name='paginated-tasks-by-project']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                paginated-tasks-allData/&lt;int:project_id&gt;/
+                [name='allDatapaginated-tasks-by-project']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/tasks_by_project_user/&lt;int:project_id&gt;/&lt;int:user_id&gt;/
+                [name='task-by-project-and-user']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/clients/create/
+                [name='client-create']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/clients/by_company/&lt;int:company_id&gt;/
+                [name='client-list-by-company']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                invite/client
+                [name='send-Client']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                upload-holidays/&lt;int:companyId&gt;/
+                [name='upload_holidays']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                holidays/&lt;int:companyId&gt;/&lt;int:year&gt;/
+                [name='get_holidays_by_year']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                holiday/update/&lt;int:holidayId&gt;/
+                [name='update_holiday']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                holiday/add/
+                [name='add_holiday']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                holidays/delete/
+                [name='delete_holidays']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                cilent/add/
+                [name='add-cilent']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                cilent/login/
+                [name='employee-login']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                employee/&lt;int:pk&gt;/remove-profile-picture/
+                [name='remove-profile-picture']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                employee/update_picture/&lt;int:pk&gt;/
+                [name='update_picture']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/client-task-details/&lt;int:company_id&gt;/
+                [name='client-task-details']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/company/&lt;int:company_id&gt;/client/&lt;int:client_id&gt;/report/
+                [name='client_report']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/premium/month/create-payment-intent/&lt;int:employee_id&gt;/
+                [name='create-payment-intent']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/vip/month/create-payment-intent/&lt;int:employee_id&gt;/
+                [name='create-payment-intent']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/premium/annual/create-payment-intent/&lt;int:employee_id&gt;/
+                [name='create-payment-intent']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/vip/annual/create-payment-intent/&lt;int:employee_id&gt;/
+                [name='create-payment-intent']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/employees/salary/&lt;int:company_id&gt;/&lt;str:year_month&gt;/
+                [name='company-employees']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/salary-payments/&lt;int:company_id&gt;/&lt;str:year_month&gt;/
+                [name='salary-payments-list']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/employee/&lt;int:employee_id&gt;/salary/&lt;str:year_month&gt;/
+                [name='create_salary']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/company/&lt;int:company_id&gt;/update-calendar-url/&lt;int:employee_id&gt;/
+                [name='update_company_calendar_url']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/company/&lt;int:pk&gt;/update_timezone/
+                [name='update-company-timezone']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/company/&lt;int:pk&gt;/add_logo/
+                [name='add-company-logo']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/company/&lt;int:pk&gt;/remove_logo/
+                [name='remove-company-logo']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/leaves/team-leader/&lt;int:team_leader_id&gt;/
+                [name='leaves-by-team-leader']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/client/delete/&lt;int:pk&gt;/
+                [name='delete-client']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/payment/update/&lt;str:payment_intent_id&gt;/
+                [name='payment-update']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/suggestion-projects/company/&lt;int:company_id&gt;/
+                [name='suggestion-projects-by-company']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/suggestion-tasks/project/&lt;int:project_id&gt;/
+                [name='suggestion-tasks-by-project']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/suggestion-projects/&lt;int:pk&gt;/delete/
+                [name='delete-suggestion-project']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/company/&lt;int:company_id&gt;/suggestion-projects/create/
+                [name='create-suggestion-project']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/suggestion-projects/&lt;int:pk&gt;/update/
+                [name='update-suggestion-project']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/suggestion-projects/&lt;int:project_id&gt;/tasks/create/
+                [name='create_suggestion_tasks']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                projects/&lt;int:project_id&gt;/create_task/
+                [name='create_task']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/leave/&lt;int:leave_id&gt;/chats/
+                [name='leave_chats_list']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/&lt;int:leave_id&gt;/leave-chat/&lt;int:sender_id&gt;/
+                [name='create_leave_chat_message']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/references/
+                [name='reference_api']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/company/&lt;int:company_id&gt;/references/
+                [name='company-references']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                reference/&lt;int:reference_id&gt;/
+                [name='reference-detail']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                create-interview/
+                [name='create-interview']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                reference-interviews/&lt;int:reference_id&gt;/
+                [name='reference-interviews']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                update-interview/&lt;int:id&gt;/
+                [name='update-interview']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                reference/&lt;int:reference_id&gt;/update-status/
+                [name='update-reference-status']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/employee/&lt;int:employee_id&gt;/working-hours/&lt;str:start_date&gt;/&lt;str:end_date&gt;/
+                [name='employee_working_hours']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/employee/&lt;int:employee_id&gt;/screenshots/&lt;str:start_date&gt;/&lt;str:end_date&gt;/
+                [name='employee_screenshots']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                projects/detail/&lt;int:project_id&gt;/
+                [name='project_detail']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                projects/more/detail/&lt;int:project_id&gt;/
+                [name='project_stats']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                project/&lt;int:project_id&gt;/screenshots/&lt;str:start_date&gt;/&lt;str:end_date&gt;/
+                [name='project-screenshots']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                user/&lt;int:user_id&gt;/project-screenshot-count/
+                [name='user-project-screenshot-count']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                team/&lt;int:team_id&gt;/fewest-tasks/
+                [name='team-member-fewest-tasks']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/references/&lt;int:referenceId&gt;/delete/
+                [name='delete_reference_api']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                employee/&lt;int:employee_id&gt;/bank_details/
+                [name='employee_bank_details']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                employee/&lt;int:employee_id&gt;/personal_information/
+                [name='employee_personal_information']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                employee/&lt;int:employee_id&gt;/family_details/
+                [name='employee_family_details']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                delete-screenshots/&lt;int:employee_id&gt;/&lt;str:date&gt;/
+                [name='delete-screenshots']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                delete-project-screenshots/&lt;int:project_id&gt;/&lt;str:date&gt;/
+                [name='delete-project-screenshots']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                family-details/delete/&lt;int:pk&gt;/
+                [name='family_detail_delete']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                employee/skills-by/&lt;int:user_id&gt;/
+                [name='skill_by_userid']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                skills/&lt;int:skill_id&gt;/
+                [name='skill-by-id']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/due-salaries/&lt;int:company_id&gt;/&lt;int:year&gt;/&lt;int:month&gt;/&lt;str:status&gt;/
+                [name='due_salaries']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                delete-payment/&lt;int:payment_id&gt;/
+                [name='delete-payment']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/employee-leaves/&lt;int:company_id&gt;/
+                [name='employee_leaves']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/employee-leaves-v2/&lt;int:company_id&gt;/
+                [name='employee_leaves']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                calculate-working-percentage/
+                [name='calculate-working-percentage']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/company/&lt;int:company_id&gt;/top-performers/&lt;str:year_month&gt;/
+                [name='company_top_performers']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/company/&lt;int:company_id&gt;/top-six-performers/&lt;str:year_month&gt;/
+                [name='company_top_six_performers']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/company/&lt;int:company_id&gt;/top-new-six-performers/&lt;str:year_month&gt;/
+                [name='company_new_top_six_performers']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                send-email-with-attachment/
+                [name='send_email_with_attachment']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                send-email-with-csv-attachment/
+                [name='send_email_with_csv_attachment']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                send_email_with_attachment_body/
+                [name='send_email_with_attachment_body']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/employees/&lt;int:pk&gt;/
+                [name='employee_patch']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/tasks/&lt;int:task_id&gt;/
+                [name='task_detail']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/tasks/chat/&lt;int:task_id&gt;/
+                [name='taskchat__detail']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                chat-history/delete-session/
+                [name='delete-chat-session']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                chat-history/sessions/
+                [name='chat-sessions']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/edit-task-chats/&lt;int:taskchat_id&gt;/
+                [name='task_chat_edit_api']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/task-chats/
+                [name='task_chat_api']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/company-projects-progress/&lt;int:company_id&gt;/
+                [name='company_projects_progress']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/company-task-status/&lt;int:company_id&gt;/
+                [name='company_task_status']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/employee-task-status/&lt;int:employee_id&gt;/
+                [name='employee-task-status']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/company/client-project-report/
+                [name='client_project_report']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/company/team-leader-report/
+                [name='team-leader-report']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                employee/report/all/
+                [name='all-employee-report']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/employee-schedule-attendance/&lt;int:employee_id&gt;/
+                [name='employee-schedule-attendance']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/client/&lt;int:client_id&gt;/
+                [name='client-detail']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                client/&lt;int:client_id&gt;/working-hours/&lt;int:year&gt;/
+                [name='monthly-working-hours']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/add/client/
+                [name='client-create']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/update/client/&lt;int:client_id&gt;/
+                [name='client-update']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/projectnotes/&lt;int:employee_id&gt;/&lt;int:project_id&gt;/
+                [name='employee-project-notes']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/tasknotes/&lt;int:employee_id&gt;/&lt;int:project_id&gt;/
+                [name='employee-task-notes']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/notes/&lt;int:employee_id&gt;/
+                [name='employee-notes']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/add/projectnotes/&lt;int:employee_id&gt;/&lt;int:project_id&gt;/
+                [name='employee-project-notes-create-update']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/add/tasknotes/&lt;int:employee_id&gt;/&lt;int:project_id&gt;/
+                [name='employee-task-notes-create-update']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/add/employeenotes/&lt;int:employee_id&gt;/
+                [name='employee-task-notes-create-update']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/companies/&lt;int:company_id&gt;/expenses/
+                [name='company_expenses']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/notifications/&lt;int:pk&gt;/mark-read/
+                [name='mark-notification-read']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                msg91/send-email/
+                [name='send_email']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/global-search/&lt;int:company_id&gt;/
+                [name='global_search']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                restore-task/&lt;int:task_id&gt;/
+                [name='restore-task']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                notifications/&lt;int:pk&gt;/update/
+                [name='notification-update']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                delete-tasks/&lt;int:user_id&gt;/
+                [name='delete-tasks']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                manage-tasks/&lt;int:user_id&gt;/
+                [name='manage-tasks']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/compose/notifications/create/&lt;int:company_id&gt;/&lt;int:sender_id&gt;/
+                [name='create_notification']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                project/toggle-active-status/&lt;int:project_id&gt;/
+                [name='toggle-project-active-status']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                employee/&lt;int:employee_id&gt;/profile-completeness/
+                [name='employee-profile-completeness']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                tasks_by_project/&lt;int:project_id&gt;/
+                [name='tasks-by-project']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                add_task/
+                [name='add-task']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                tasklog/create/
+                [name='create-tasklog']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                tasklog/new/create/
+                [name='create-new-tasklog']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                tasklogs/bulk/create/&lt;int:user_id&gt;/
+                [name='create-bulk-tasklogs']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/tasklogs/move/
+                [name='move-tasklogs']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                tasklogs/bulk/create/
+                [name='create-bulk-tasklogs']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                screenshot/
+                [name='screenshot-create']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                screenshot/bulk/create/
+                [name='screenshot-bulk-create']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                get-random-quote/
+                [name='get-random-quote']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                quotes/
+                [name='quote-list']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                company-calendar/&lt;int:company_id&gt;/
+                [name='company-calendar-api']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                company/&lt;int:pk&gt;/
+                [name='company-detail']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                user-working-hours/&lt;int:user_id&gt;/&lt;str:date&gt;/
+                [name='user-working-hours']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/notices/&lt;int:company_id&gt;/
+                [name='notices-list']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                company-notices/&lt;int:company_id&gt;/
+                [name='company-notices']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/notices/create/&lt;int:company_id&gt;/
+                [name='notices-create']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                delete-notice/&lt;int:notifies_id&gt;/
+                [name='delete-notice']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                verify-email/
+                [name='verify-email']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                send-update-email-otp/
+                [name='verify-email']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                get-register-otp/
+                [name='register-otp']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/send-contact-email/
+                [name='send_contact_email']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/create-company-and-employee/
+                [name='create-company-and-employee']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/verify-otp/
+                [name='verify-otp']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/verify-otp-and-update/
+                [name='verify-otp']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                tasks/&lt;int:company_id&gt;/user/&lt;int:user_id&gt;/
+                [name='user-tasks']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/company/&lt;int:company_id&gt;/tasks/
+                [name='company-projects']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/company/&lt;int:company_id&gt;/&lt;int:employee_id&gt;/tasks/
+                [name='company-tasks-employee']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                company/&lt;int:company_id&gt;/tasks/status/
+                [name='company-tasks-status']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                team/&lt;int:team_id&gt;/update/
+                
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                company/&lt;int:company_id&gt;/update/&lt;int:user_id&gt;/
+                [name='company-update']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                companies/&lt;int:company_id&gt;/users/&lt;int:user_id&gt;/employees/
+                [name='employee-list']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                feedback/
+                [name='create-feedback']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                employee-feedback/patch/&lt;int:id&gt;/
+                [name='employee-feedback-patch']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/feedbacks/&lt;int:receiver_id&gt;/
+                [name='feedback-receiver']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                feedback/&lt;int:pk&gt;/
+                [name='feedback-detail']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/task/&lt;int:task_id&gt;/attachments/
+                [name='task-attachments']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/task/&lt;int:task_id&gt;/attachments/&lt;str:attachment_id&gt;/
+                [name='task-attachment-delete']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/task/&lt;int:task_id&gt;/upload/
+                [name='task-file-upload']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/complaints/create/
+                [name='complaint-create']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/complaints/company/&lt;int:company_id&gt;/
+                [name='complaint-list-by-company']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/complaints/company/&lt;int:company_id&gt;/employee/&lt;int:employee_id&gt;/
+                [name='complaint-list-by-company-and-employee']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/employee/&lt;int:employee_id&gt;/working-hours/&lt;str:year_month&gt;/
+                [name='employee-monthly-working-hours']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                leave/&lt;int:leave_id&gt;/journeys/
+                [name='leave-journey-list']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/taskfile/&lt;int:pk&gt;/
+                [name='taskfile-delete']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/taskchat/&lt;int:pk&gt;/
+                [name='taskchat-detail']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/userinfo/&lt;int:user_id&gt;/
+                [name='user_info']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/company/&lt;int:company_id&gt;/tasks-summary-barChat/
+                [name='company-tasks-summary']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/company/&lt;int:company_id&gt;/employee/&lt;int:employee_id&gt;/tasks-summary-barChat/
+                [name='employee-tasks-summary']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/employee-performance/
+                [name='employee-performance']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/like-chat/&lt;int:employee_id&gt;/&lt;int:chat_id&gt;/
+                [name='like-chat']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/dislike-chat/&lt;int:employee_id&gt;/&lt;int:chat_id&gt;/
+                [name='dislike-chat']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                check-due-payment/&lt;int:company_id&gt;/
+                [name='user-plan-check']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/client/&lt;int:client_id&gt;/projects/
+                [name='client_projects']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/client/&lt;int:client_id&gt;/tasks-statistics/
+                [name='client_tasks_statistics']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/client/projects/&lt;int:project_id&gt;/summary/
+                [name='project_task_summary']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/client/&lt;int:client_id&gt;/tasks/
+                [name='client_tasks']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/client/projects/&lt;int:project_id&gt;/tasks/
+                [name='project_tasks']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/clients/&lt;int:client_id&gt;/projects/tasks/
+                [name='client_projects_tasks']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/client-task-data/&lt;int:client_id&gt;/
+                [name='client_task_data']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/client-employee-task-data/&lt;int:client_id&gt;/&lt;int:employee_id&gt;/
+                [name='client_employee_task_data']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                update-projects-client/&lt;int:client_id&gt;/
+                [name='update-projects-client']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                update-client-projects/&lt;int:client_id&gt;/
+                [name='update-projects-client']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                client/toggle-active/&lt;int:client_id&gt;/
+                [name='toggle-client-active']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                client/toggle-report-by-mail/&lt;int:client_id&gt;/
+                [name='toggle-client-report-by-mail']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/client/new/&lt;int:client_id&gt;/tasks/
+                [name='client-tasks']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/client/&lt;int:client_id&gt;/tasks/summary-detail/
+                [name='client-task-detail']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/create-client-task/&lt;int:assignclientby_id&gt;/
+                [name='create-client-task']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                client/&lt;int:client_id&gt;/task-count/
+                [name='client-task-count']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                project/&lt;int:project_id&gt;/task-count/
+                [name='project-task-count']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/create-job-vacancies/
+                [name='job-vacancy-create']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/recruitments/
+                [name='fetch-recruitments-by-company']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/job/&lt;int:job_id&gt;/
+                [name='fetch_recruitment_by_job_id']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/applicant-information/
+                [name='create_applicant_information']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/applicants/&lt;int:company_id&gt;/
+                [name='fetch_applicants_by_company']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/applicant/&lt;int:application_id&gt;/
+                [name='fetch_applicant_details']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/employees-company/&lt;int:company_id&gt;/
+                [name='fetch-employees-by-company']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/schedule-interview/
+                [name='schedule-interview']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/interviews/&lt;int:application_id&gt;/
+                [name='fetch-interviews-by-application']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/interview-details/&lt;int:interview_id&gt;/
+                [name='fetch_interview_by_id']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/interviews-by-interviewer/&lt;int:interviewer_id&gt;/
+                [name='interview-by-interviewer']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/interview-status-update/&lt;int:interview_id&gt;/
+                [name='update-interview']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/create-interviewer-remark/
+                [name='create_interviewer_remark']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/interviewer-remark/&lt;int:employee_id&gt;/&lt;int:interview_id&gt;/
+                [name='interviewer-remark-detail']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/interviews-by-status/&lt;int:companyId&gt;/
+                [name='interview-status']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/company-interviewer-remarks/&lt;int:company_id&gt;/
+                [name='company-interviewer-remarks']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/edit-recruitment/&lt;int:job_id&gt;/
+                [name='update-recruitment']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/interviews/remarks/&lt;int:interview_id&gt;/
+                [name='interviewer-remark-detail']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/vendors/
+                [name='vendor-list']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/vendors/&lt;int:company_id&gt;/
+                [name='vendor-by-company']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/vendor/create/
+                [name='vendor-create']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/company_accounts/
+                [name='company-account-list']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/company_accounts/&lt;int:company_id&gt;/
+                [name='company-account-by-company']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/company_accounts/create/
+                [name='account-create']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/company-expense/create/
+                [name='company-expense-create']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/expenses-list/&lt;int:company_id&gt;/
+                [name='company-expenses-list']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/company-expense/&lt;int:company_id&gt;/&lt;int:expense_id&gt;/
+                [name='get-company-expense']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/company-expense/delete/&lt;int:company_id&gt;/&lt;int:expense_id&gt;/
+                [name='delete-company-expense']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/company-expense/update/&lt;int:company_id&gt;/&lt;int:expense_id&gt;/
+                [name='update-company-expense']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/job-title-suggestions/
+                [name='job_title_suggestions']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/careers/&lt;int:company_id&gt;/
+                [name='recruitment-list']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/reschedule-interviews/&lt;int:company_id&gt;/&lt;int:interview_id&gt;/
+                [name='update-interview']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/cancel-interview/&lt;int:company_id&gt;/&lt;int:interview_id&gt;/
+                [name='cancel-interview']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/tasklogs/delete/&lt;int:pk&gt;/
+                [name='tasklog-delete']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/company/&lt;int:company_id&gt;/live/reporting/employees/
+                [name='company-employees-last-task']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/interviews/&lt;int:company_id&gt;/&lt;int:interview_id&gt;/cancel/
+                [name='cancel_interview']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                company/&lt;int:company_id&gt;/details/
+                [name='company-details-with-user-plans']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                company/details/
+                [name='company-details-with-user-plans-default']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                company/&lt;int:company_id&gt;/storage/
+                [name='company-storage']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                company/&lt;int:company_id&gt;/storage/update/
+                [name='update-storage']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                permissions/
+                [name='permission-list']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                employee/&lt;int:employee_id&gt;/permissions/
+                [name='employee-permission-detail']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                storage-plans/
+                [name='storage-plan-list']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/storage-payments/&lt;int:company_id&gt;/
+                [name='storage-payment-list']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/user-payments/&lt;int:company_id&gt;/
+                [name='user-payment-list']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                company/&lt;int:company_id&gt;/razorpay-subscriptions/
+                [name='razorpay-subscription-list']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                create-subscription/
+                [name='create_subscription']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                cancel-subscription/
+                [name='cancel_subscription']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                webhook-handler/
+                [name='webhook_handler']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                get-current-subscription/&lt;str:company_id&gt;/
+                [name='get_current_subscription']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                check-subscription-expiry/&lt;int:company_id&gt;/
+                [name='check_subscription_expiry']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                create-order/
+                [name='create_order']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                verify-payment/
+                [name='verify_payment']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                payment/
+                [name='handle_payment']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/handle_user_payment/
+                [name='handle_payment']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                save-payment-info/
+                [name='save_payment_info']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/quotation/projects/create/
+                [name='project-create']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/company/&lt;int:company_id&gt;/projects/Quotation/
+                [name='company-projects']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                delete-project-quotation/&lt;int:pk&gt;/
+                [name='delete-project-quotation']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                project-quotation/&lt;int:pk&gt;/
+                [name='project-quotation-detail']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/employee-attendance/&lt;int:company_id&gt;/
+                [name='employee-attendance']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/employee-pagination-attendance/&lt;int:company_id&gt;/
+                [name='employee-attendance']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/single-employee-attendance/&lt;int:company_id&gt;/&lt;int:employee_id&gt;/
+                [name='employee-attendance-detail']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/bulk-upload-tasks/
+                [name='bulk-upload-tasks']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/health-check/
+                [name='health-check']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/kpi/company/&lt;int:company_id&gt;/
+                [name='kpi-list-create']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/kpi/&lt;int:id&gt;/update/
+                [name='kpi-update']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/kpi/&lt;int:id&gt;/
+                [name='kpi-retrieve']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/task_counts/&lt;int:company_id&gt;/
+                [name='task-counts']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/employee_task_counts/&lt;int:employee_id&gt;/
+                [name='employee-task-counts']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/project-summary/&lt;int:user_id&gt;/
+                [name='project-task-summary']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/employee-project-summary/&lt;int:company_id&gt;/&lt;int:employee_id&gt;/
+                [name='employee-project-task-summary']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                company/&lt;int:company_id&gt;/projects-by-date-range/
+                [name='projects_by_date_range']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/project/&lt;int:project_id&gt;/employees-time-spent/
+                [name='project-employee-time-spent']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/holidays/&lt;int:companyid&gt;/&lt;str:month&gt;/
+                [name='company-holidays']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/employee/per/&lt;int:employee_id&gt;/
+                [name='employee_detail']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                employees/&lt;int:employee_id&gt;/admins-and-leaders/
+                [name='admins-and-leaders-list']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/transfer-employee-data/
+                [name='transfer-employee-data']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/check-email/
+                [name='check-email']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/create-attendance/
+                [name='attendance-list-create']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/create-attendance-notify/
+                [name='attendance-list-create-notify']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/create-attendance-notify/v2/
+                [name='attendance-list-create-notify-v2']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/update-attendance-log/&lt;int:pk&gt;/
+                [name='attendance-log-update']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/attendance-logs/
+                [name='attendance-logs-view']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                task-journey/&lt;int:task_id&gt;/
+                [name='task-journey-by-task']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/process-repetitive-tasks/
+                [name='process_repetitive_tasks']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/task-details/&lt;int:task_id&gt;/
+                [name='task-work-details']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/tasks/summary-detail-date/&lt;int:company_id&gt;/
+                [name='task-summary-by-date']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                companies/&lt;int:company_id&gt;/locations/
+                [name='create-location']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                companies/&lt;int:company_id&gt;/locations/&lt;int:location_id&gt;/
+                [name='update-location']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                companies/&lt;int:company_id&gt;/multiple/locations/
+                [name='create-location-multiple']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                companies/&lt;int:company_id&gt;/multiple/locations/&lt;int:location_id&gt;/
+                [name='update-location-multiple']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                mark-task-as-seen/
+                [name='mark-task-as-seen']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                tasks/update/&lt;int:task_id&gt;/
+                [name='update_task']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/company/&lt;int:company_id&gt;/invited-employees/
+                [name='company-invited-employees']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/invited-employees/bulk-delete/
+                [name='invited-employees-bulk-delete']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                employee_report/
+                [name='employee_report']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                send-protected-file/
+                [name='send_protected_file']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                userlogin/
+                [name='user-login']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/google-userlogin/
+                [name='google-login']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                test-onesignal/
+                [name='test-notification']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                employees-basic-details/list/&lt;int:company_id&gt;/
+                [name='get_employees_by_company']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                employees/update_favorites/
+                [name='update-favorites']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/company/month-attendance/
+                [name='company-month-attendance-logs']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/company/attendance-log/
+                [name='company-attendance-log']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/task-logs/&lt;int:taskLogId&gt;/users/&lt;int:userId&gt;/screenshots/
+                [name='screenshots-for-task-log']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                tasklogs/&lt;int:taskLogId&gt;/
+                [name='tasklog_update']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                screenshot/&lt;int:screenshotId&gt;/
+                [name='edit_screenshot']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                bulk-delete-screenshots/
+                [name='delete-bulk-screenshots']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                bulk-edit-screenshots/
+                [name='screenshot-bulk-edit']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                trigger-attendance-check/
+                [name='trigger_attendance_check']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/attendance-logs/&lt;int:checkin_id&gt;/delete/
+                [name='attendance-log-delete']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                send-notification/&lt;int:user_id&gt;/
+                [name='send_notification_to_user']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/tasks/search/
+                [name='task-search']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/projects/&lt;int:project_id&gt;/status/
+                [name='get_project_statuses']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/projects/&lt;int:project_id&gt;/status/add/
+                [name='add_project_status']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/projects/&lt;int:project_id&gt;/status/&lt;str:status_id&gt;/update/
+                [name='update_project_status']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/projects/&lt;int:project_id&gt;/status/&lt;str:status_id&gt;/delete/
+                [name='delete_project_status']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/company/&lt;int:company_id&gt;/project-status/
+                [name='company-project-status']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                project-status/&lt;int:company_id&gt;/&lt;int:project_id&gt;/
+                [name='company-project-status']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/update-task-status-in-progress/&lt;str:taskId&gt;/&lt;str:userId&gt;/
+                [name='update-task-status']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/bulk-create-tasks/&lt;str:assignby_id&gt;/
+                [name='bulk-create-tasks']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/razorpay/webhook/
+                [name='razorpay_webhook']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/razorpay/payment/success/
+                [name='payment_success_handler']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/company/subscription/
+                [name='company_subscription']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/company/subscription/modify/
+                [name='modify_company_subscription']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/company/subscription/transactions/
+                [name='subscription_transactions']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                task-templates/create/&lt;int:user_id&gt;/
+                [name='task-template-create']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                task-templates/company/&lt;int:company_id&gt;/&lt;int:user_id&gt;/
+                [name='task-template-by-company']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                task-templates/company/&lt;int:company_id&gt;/&lt;int:user_id&gt;/v-2/
+                [name='task-template-by-company-v-public']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                task-templates/delete/&lt;int:template_id&gt;/
+                [name='task-template-delete']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                recurring-task/&lt;int:pk&gt;/toggle/
+                [name='toggle-recurring-task']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/create-recurring-task/&lt;int:user_id&gt;/
+                [name='create-recurring-task']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/recurring-tasks/bulk-delete/
+                [name='recurring-task-bulk-delete']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                recurring-tasks/bulk-update/
+                [name='recurring-task-bulk-update']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/companies/&lt;int:company_id&gt;/&lt;int:user_id&gt;/recurring-tasks/
+                [name='company-recurring-tasks']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/delete-recurring-task/&lt;int:task_id&gt;/
+                [name='delete-recurring-task']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/recurring-task/&lt;int:task_id&gt;/
+                [name='delete-recurring-task']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/update-recurring-task/&lt;int:task_id&gt;/
+                [name='update-recurring-task']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/recurring-tasks/&lt;int:pk&gt;/attachments/
+                [name='edit_recurring_task_attachments']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                token-login/
+                [name='token-login']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                otp-login/
+                [name='otp-login']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                tasks/&lt;int:parent_id&gt;/subtasks/
+                
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                tasks/subtasks/create/
+                
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                tasks/subtasks/delete/&lt;int:subtask_id&gt;/
+                
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/notify-comment-viewed/&lt;int:comment_id&gt;/user/&lt;int:user_id&gt;/
+                
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                tasks/permanent-delete/
+                [name='permanent-delete-tasks']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                projects/&lt;int:project_id&gt;/journey/
+                [name='project-journey']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                project-v2/&lt;int:_id&gt;/&lt;int:user_id&gt;/
+                [name='project-create-update-v2']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                project-v2/&lt;int:user_id&gt;/
+                [name='project-create-update-v2']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                project-notes/
+                
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                project-notes/&lt;int:pk&gt;/
+                
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                project-notes-attachments/&lt;int:pk&gt;/
+                
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                project-notes/project/&lt;int:project_id&gt;/
+                
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                task-sections/
+                [name='task-section-create']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                sections/&lt;int:section_id&gt;/tasks/
+                
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                projects/&lt;int:project_id&gt;/sections-with-task-count/
+                [name='project-sections-filtered-count']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                tasks/create-with-section/
+                
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                projects/&lt;int:project_id&gt;/sections/
+                
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                projects/&lt;int:project_id&gt;/sections/swap/
+                
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                tasks/&lt;int:task_id&gt;/change-section/
+                
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                sections/&lt;int:section_id&gt;/rename/
+                [name='update-section-name']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                sections/&lt;int:section_id&gt;/delete/
+                [name='delete-task-section']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                tasks/swap-order/
+                [name='swap-task-order']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                export-tasks/&lt;int:project_id&gt;/
+                [name='export-tasks']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/project-duplicate/&lt;int:project_id&gt;/&lt;int:user_id&gt;/
+                [name='dublicate-project']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                project-template/&lt;int:user_id&gt;/&lt;int:project_id&gt;/
+                [name='project-template']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/delete-project-with-condition/
+                [name='delete-project-with-condition']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/tasks/import/
+                [name='import-section-tasks']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/taskchat/&lt;int:id&gt;/get-formatted-link/
+                [name='get-comment-link']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                tasksection/&lt;int:section_id&gt;/toggle-collapse/
+                [name='toggle-collapse']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                projects/&lt;int:project_id&gt;/task-stats/
+                [name='project-task-stats']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/tasks/change-section/
+                [name='bulk-change-task-section']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/user-task-summary/
+                [name='user-task-summary']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                projects/
+                [name='user-projects']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                user-work-summary/
+                [name='user-work-summary']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                employees/search/&lt;int:company_id&gt;/
+                [name='employee-search']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                project/search/&lt;int:company_id&gt;/
+                [name='porject-search']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/company/&lt;int:company_id&gt;/search/
+                [name='unified-search']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/company/&lt;int:company_id&gt;/&lt;int:employee_id&gt;/tasks-for-ai/
+                [name='company-tasks-employee']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                notification-settings/&lt;int:user_id&gt;/
+                [name='notification_settings']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/performance/&lt;int:company_id&gt;/
+                [name='employee-performance']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                chat-history/
+                [name='chat-history']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                chat-history/&lt;int:pk&gt;/update/
+                [name='chat-history-update']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/update-email-subscription/
+                [name='update-email-subscription']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/all-tasks/summary-detail/&lt;int:company_id&gt;/
+                [name='all-tasks-detail']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/send-invite-otp/
+                [name='send-invite-otp']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                notifications/delete/
+                [name='notification-delete']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                notifications/&lt;int:user_id&gt;/clear/
+                [name='notification-clear']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/whatsapp/webhook/
+                [name='whatsapp-webhook']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/whatsapp/send/
+                [name='send-whatshapp-message']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/whatsapp/chats/
+                
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/whatsapp/messages/
+                
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/whatsapp/start/
+                [name='start-whatsapp-verification']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/whatsapp/send-otp/&lt;int:employee_id&gt;/
+                [name='send-whatsapp-otp']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/whatsapp/verify-otp/&lt;int:employee_id&gt;/
+                [name='verify-whatsapp-otp']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                company/&lt;int:company_id&gt;/employees/&lt;int:employee_id&gt;/tasks/export-csv/
+                
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                version-history/&lt;int:user_id&gt;/
+                [name='version-history']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                version-history/&lt;int:user_id&gt;/
+                [name='version-history-detail']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/live-activity/&lt;str:company_id&gt;/
+                [name='live-activity']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                user-locations/&lt;int:user_id&gt;/
+                [name='user_location_list_create']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                user-locations/&lt;int:user_id&gt;/&lt;int:location_id&gt;/
+                [name='user_location_update']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/get-firebase-token/
+                [name='get-firebase-token']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/sallery-by-employee/&lt;int:employee_id&gt;/
+                [name='sallery-by-employee']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/employee/&lt;int:employee_id&gt;/send-salary-notification/
+                [name='send_salary_notification']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/employee/&lt;int:employee_id&gt;/salary-status/&lt;int:year&gt;/&lt;int:month&gt;/
+                [name='employee_salary_status']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                apple/send-verification-email/
+                
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                apple/verify-email-otp/
+                
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                all-tickets/&lt;int:user_id&gt;/
+                [name='ticket_list']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                super-admin-tickets/
+                [name='ticket_list']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                tickets/create/
+                [name='ticket_create']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                tickets/&lt;int:pk&gt;/
+                [name='ticket_detail']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                tickets/&lt;int:pk&gt;/update-status/
+                [name='ticket_update_status']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                tickets/&lt;int:pk&gt;/assign/
+                [name='ticket_assign']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                user-tickets/&lt;int:user_id&gt;/
+                [name='ticket_by_user']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                task/create-get-draft/&lt;str:employee_id&gt;/
+                [name='create-draft-task']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                ticket-messages/
+                [name='ticket_message_list']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                ticket-messages/create/
+                [name='ticket_message_create']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                ticket-feedback/create/
+                [name='ticket_feedback_create']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                company/&lt;int:company_id&gt;/free-trial/
+                
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                file/&lt;int:company_id&gt;/&lt;path:file_name&gt;/
+                
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                projects/&lt;int:project_id&gt;/request-access/&lt;int:employee_id&gt;/
+                
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                projects/access-request/&lt;int:req_id&gt;/approve/&lt;int:employee_id&gt;/
+                
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                projects/access-request/&lt;int:req_id&gt;/reject/&lt;int:employee_id&gt;/
+                
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                projects/&lt;int:project_id&gt;/access-requests/
+                
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                company/&lt;int:company_id&gt;/schedule/breaks/
+                [name='company-schedule-breaks']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                company/&lt;int:company_id&gt;/schedule/breaks/&lt;int:break_id&gt;/
+                [name='company-schedule-break-delete']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/leaves/&lt;int:leave_id&gt;/action/&lt;int:employee_id&gt;/
+                [name='leave-action']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                employees/&lt;int:employee_id&gt;/settings/
+                [name='employee-settings']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                firebase-login/
+                [name='firebase-login']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                create-company-firebase/
+                [name='create-company-firebase']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/salary-history/&lt;int:employee_id&gt;/
+                [name='employee-salary-history']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/company/&lt;int:company_id&gt;/projects/working-hours/
+                [name='company-project-working-hours']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/company/&lt;int:company_id&gt;/projects/working-hours/v2/
+                [name='company-project-working-hours-v2']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                company/&lt;int:company_id&gt;/weekdays/
+                
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                company/&lt;int:company_id&gt;/weekdays/&lt;int:weekday_id&gt;/
+                
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                company/&lt;int:company_id&gt;/leave-carry-forward/
+                [name='company-leave-carry-forward']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                company/&lt;int:company_id&gt;/shifts/
+                
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                shifts/&lt;int:shift_id&gt;/
+                
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                shifts/&lt;int:shift_id&gt;/breaks/
+                
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                breaks/&lt;int:break_id&gt;/
+                
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                employees/assign-shift/
+                [name='bulk-employee-shift-assign']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                dashboard/work-summary/
+                [name='work-dashboard-summary']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                dashboard/project-work-summary/
+                [name='work-dashboard-summary']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                dashboard/project-work-summary/send-email/
+                [name='team-efficiency-email']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                book/demo-trial/
+                
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                demo-trial/list/
+                
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/meetings/user/&lt;int:user_id&gt;/
+                [name='user-meetings-list']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/meetings/&lt;int:meeting_id&gt;/update-project/
+                [name='meeting-update-project']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/meetings/&lt;int:meeting_id&gt;/notify/
+                [name='meeting-notify-completion']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/meetings/&lt;int:meeting_id&gt;/details/
+                [name='meeting-details']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/delete-meeting/&lt;int:meeting_id&gt;/
+                [name='meeting-deletion']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/credits/deduct/
+                [name='credit-deduct']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/time-warning/action/
+                [name='time-warning-action']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/company/&lt;int:company_id&gt;/time-warnings/
+                [name='company-time-warnings']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/tasks/&lt;int:task_id&gt;/notify-allocated-time/
+                [name='notify_task_allocated_time']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/send-invite/
+                
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/verify-invite/
+                
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/get-mobile-invite-details/
+                [name='get-mobile-invite-details']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                api/workspace-onboarding/user/&lt;int:user_id&gt;/company/&lt;int:company_id&gt;/
+                [name='workspace-onboarding']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                mcp/log-error/
+                [name='mcp-log-error']
+            
+          </li>
+        
+          <li>
+            
+                
+                
+            
+                ^media/(?P&lt;path&gt;.*)$
+                
+            
+          </li>
+        
+          <li>
+            
+                api/asana/
+                
+            
+          </li>
+        
+          <li>
+            
+                api/calendar/
+                
+            
+          </li>
+        
+          <li>
+            
+                chat/
+                
+            
+          </li>
+        
+          <li>
+            
+                superadmin/
+                
+            
+          </li>
+        
+          <li>
+            
+                slack/
+                
+            
+          </li>
+        
+          <li>
+            
+                ^static/(?P&lt;path&gt;.*)$
+                
+            
+          </li>
+        
+      </ol>
+      <p>
+        
+          The current path, <code>tasks/</code>,
+        
+        didn’t match any of these.
+      </p>
+    
+  </div>
+
+  <div id="explanation">
+    <p>
+      You’re seeing this error because you have <code>DEBUG = True</code> in
+      your Django settings file. Change that to <code>False</code>, and Django
+      will display a standard 404 page.
+    </p>
+  </div>
+</body>
+</html>

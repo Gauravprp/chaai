@@ -7,6 +7,11 @@ import "toastflux/styles/toast.css";
 export const metadata = {
   title: 'TeamFlow AI - Enterprise Team Chat & Project Management SaaS',
   description: 'Enterprise team chat and task collaboration combined with real-time sync and AI integrations.',
+  icons: {
+    icon: '/favicon.svg',
+    shortcut: '/favicon.svg',
+    apple: '/favicon.svg',
+  },
 };
 
 export default function RootLayout({ children }) {

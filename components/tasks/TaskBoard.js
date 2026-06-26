@@ -11,10 +11,10 @@ const COLUMNS = ['Todo', 'In Progress', 'Review', 'Done'];
 export default function TaskBoard() {
   const { tasks, setTasks, activeTeam, members } = useWorkspace();
   const { profile } = useAuth();
-  
+
   const [viewMode, setViewMode] = useState('kanban'); // 'kanban', 'list', 'calendar'
   const [showAddModal, setShowAddModal] = useState(false);
-  
+
   // Task form state
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -39,12 +39,12 @@ export default function TaskBoard() {
         })
         .select()
         .single();
-      
+
       if (error) throw error;
-      
+
       // Update local state
       setTasks(prev => [...prev, data]);
-      
+
       // Reset form
       setTitle('');
       setDescription('');
@@ -126,27 +126,24 @@ export default function TaskBoard() {
           <div className="flex items-center bg-slate-100 p-0.5 rounded-lg border border-slate-200">
             <button
               onClick={() => setViewMode('kanban')}
-              className={`p-1.5 rounded-md text-xs font-semibold flex items-center gap-1 smooth-transition ${
-                viewMode === 'kanban' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-800'
-              }`}
+              className={`p-1.5 rounded-md text-xs font-semibold flex items-center gap-1 smooth-transition ${viewMode === 'kanban' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-800'
+                }`}
             >
               <Kanban size={13} />
               <span>Kanban</span>
             </button>
             <button
               onClick={() => setViewMode('list')}
-              className={`p-1.5 rounded-md text-xs font-semibold flex items-center gap-1 smooth-transition ${
-                viewMode === 'list' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-800'
-              }`}
+              className={`p-1.5 rounded-md text-xs font-semibold flex items-center gap-1 smooth-transition ${viewMode === 'list' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-800'
+                }`}
             >
               <List size={13} />
               <span>List</span>
             </button>
             <button
               onClick={() => setViewMode('calendar')}
-              className={`p-1.5 rounded-md text-xs font-semibold flex items-center gap-1 smooth-transition ${
-                viewMode === 'calendar' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-800'
-              }`}
+              className={`p-1.5 rounded-md text-xs font-semibold flex items-center gap-1 smooth-transition ${viewMode === 'calendar' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-800'
+                }`}
             >
               <Calendar size={13} />
               <span>Calendar</span>

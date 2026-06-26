@@ -51,9 +51,8 @@ export default function ProjectSwitcher() {
               setActiveProject({ id: 'all', name: 'All Projects' });
               setIsOpen(false);
             }}
-            className={`w-full flex items-center gap-2 px-3 py-2 text-left text-sm hover:bg-slate-50 ${
-              activeProject?.id === 'all' ? 'font-bold bg-indigo-50/50 text-indigo-600' : ''
-            }`}
+            className={`w-full flex items-center gap-2 px-3 py-2 text-left text-sm hover:bg-slate-50 ${activeProject?.id === 'all' ? 'font-bold bg-indigo-50/50 text-indigo-600' : ''
+              }`}
           >
             <span className="w-5 h-5 rounded bg-indigo-100 text-indigo-700 flex items-center justify-center text-xs font-bold">
               AL
@@ -69,9 +68,8 @@ export default function ProjectSwitcher() {
                 setActiveProject(proj);
                 setIsOpen(false);
               }}
-              className={`w-full flex items-center gap-2 px-3 py-2 text-left text-sm hover:bg-slate-50 ${
-                activeProject?.id === proj.id ? 'font-bold bg-indigo-50/50 text-indigo-600' : ''
-              }`}
+              className={`w-full flex items-center gap-2 px-3 py-2 text-left text-sm hover:bg-slate-50 ${activeProject?.id === proj.id ? 'font-bold bg-indigo-50/50 text-indigo-600' : ''
+                }`}
             >
               <span className="w-5 h-5 rounded bg-slate-200 text-slate-700 flex items-center justify-center text-xs font-bold">
                 {proj.name.substring(0, 2).toUpperCase()}
