@@ -51,7 +51,9 @@ export function CallProvider({ children }) {
     if (!profile) return;
 
     const historySub = supabase.channel('public:call_history')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'call_history', filter: `receiver_id=eq.${toUUID(profile.id)}` }, async (payload) => {
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'call_history' }, async (payload) => {
+        if (toUUID(payload.new.receiver_id) !== toUUID(profile.id)) return;
+
         if (callState !== 'idle') {
           // Busy
           await sendSignal(payload.new.id, payload.new.caller_id, 'busy', {});
@@ -63,15 +65,13 @@ export function CallProvider({ children }) {
         setActiveCall(payload.new);
         setCallState('ringing');
       })
-      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'call_history', filter: `caller_id=eq.${toUUID(profile.id)}` }, (payload) => {
-         // Handle end call from remote for outgoing caller
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'call_history' }, (payload) => {
+         const isCaller = toUUID(payload.new.caller_id) === toUUID(profile.id);
+         const isReceiver = toUUID(payload.new.receiver_id) === toUUID(profile.id);
+         if (!isCaller && !isReceiver) return;
+
+         // Handle end call from remote
          if (payload.new.status === 'completed' || payload.new.status === 'rejected' || payload.new.status === 'missed') {
-           resetCall();
-         }
-      })
-      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'call_history', filter: `receiver_id=eq.${toUUID(profile.id)}` }, (payload) => {
-         // Handle end call from remote for receiver
-         if (payload.new.status === 'completed' || payload.new.status === 'missed') {
            resetCall();
          }
       })
@@ -87,8 +87,9 @@ export function CallProvider({ children }) {
     if (!profile || !activeCall) return;
 
     const signalSub = supabase.channel('public:call_signals')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'call_signals', filter: `receiver_id=eq.${toUUID(profile.id)}` }, async (payload) => {
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'call_signals' }, async (payload) => {
         const signal = payload.new;
+        if (toUUID(signal.receiver_id) !== toUUID(profile.id)) return;
         if (signal.call_id !== activeCall.id) return;
 
         try {
